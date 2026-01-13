@@ -306,15 +306,15 @@
     }
 
     .submit-btn.help-btn {
-      background: #fef3c7;
-      color: #92400e;
-      border: 2px solid #f59e0b;
+      background: #1e293b;
+      color: #ffffff;
+      border: 2px solid #1e293b;
       font-weight: 600;
     }
 
     .submit-btn.help-btn:hover:not(:disabled) {
-      background: #fde68a;
-      box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+      background: #0f172a;
+      box-shadow: 0 4px 12px rgba(30, 41, 59, 0.4);
     }
 
     .btn-row {
@@ -1676,11 +1676,19 @@
     async function showTokenVerification(isValidFormat) {
       const validMsg = isValidFormat ? getText('tokenValid') : getText('tokenInvalid');
       const validClass = isValidFormat ? 'success-box' : 'warning-box';
+      const tokenLabel = state.language === 'en' ? 'Your entered token' : '입력한 토큰';
+      const appNameLabel = state.language === 'en' ? 'App Name' : '앱 이름';
       await addBot(`
         <div class="${validClass}">${validMsg}</div>
         <div class="dashboard-guide" style="margin-top: 12px;">
           <h4>🔍 ${getText('tokenVerifyTitle')}</h4>
           <p style="margin-bottom: 8px;">${getText('tokenVerifyDesc')}</p>
+          <div style="background: #f1f5f9; border-radius: 8px; padding: 12px; margin-bottom: 12px;">
+            <p style="font-size: 12px; color: #64748b; margin-bottom: 4px;">${appNameLabel}:</p>
+            <p style="font-family: monospace; font-size: 14px; color: #1e293b; font-weight: 600;">${state.appName}</p>
+            <p style="font-size: 12px; color: #64748b; margin-bottom: 4px; margin-top: 8px;">${tokenLabel}:</p>
+            <p style="font-family: monospace; font-size: 14px; color: #1e293b; font-weight: 600; word-break: break-all;">${state.sdkToken}</p>
+          </div>
           <div class="path">${getText('tokenVerifyStep1')} → ${getText('tokenVerifyStep2')}</div>
           <div class="checklist" id="tokenVerifyChecklist">
             <label class="checklist-item">
@@ -1863,7 +1871,7 @@
                 <li>${getText('attributionStep4')}</li>
               </ol>
             </div>
-            <a href="${getHelpLink('/guides/ad-channel-integration')}" target="_blank" class="help-link">${getText('attributionHelpLink')} →</a>
+            <a href="${getHelpLink('/guides/attribution-overview')}" target="_blank" class="help-link">${getText('attributionHelpLink')} →</a>
           </div>
         `);
       }
@@ -1916,7 +1924,7 @@
                 <li>${getText('deeplinkDashboardStep3')}</li>
               </ol>
             </div>
-            <a href="${getHelpLink('/guides/deep-link')}" target="_blank" class="help-link">${getText('deeplinkHelpLink')} →</a>
+            <a href="${getHelpLink('/deeplink-guides/understanding-deep-link')}" target="_blank" class="help-link">${getText('deeplinkHelpLink')} →</a>
           </div>
         `);
       }
@@ -1957,7 +1965,7 @@
                 <li>${getText('userIdentityDashboardStep2')}</li>
               </ol>
             </div>
-            <a href="${getHelpLink('/guides/user-identifier')}" target="_blank" class="help-link">${getText('userIdentityHelpLink')} →</a>
+            <a href="${getHelpLink('/guides/identifiers')}" target="_blank" class="help-link">${getText('userIdentityHelpLink')} →</a>
           </div>
         `);
       }
@@ -2010,7 +2018,7 @@
             </div>
           </div>
 
-          <a href="${getHelpLink('/guides/ios-sdk-setup')}" target="_blank" class="help-link">${getText('iOSHelpLink')} →</a>
+          <a href="${getHelpLink('/developers/ios-sdk-v4')}" target="_blank" class="help-link">${getText('iOSHelpLink')} →</a>
         </div>
         <div style="margin-top: 12px;">
           <button class="submit-btn" onclick="confirmIOSSettings()">✅ ${getText('gotItInclude')}</button>
@@ -2084,7 +2092,7 @@ ${template}
         app_config: { platform: state.platform, app_name: state.appName, sdk_token: state.sdkToken },
         features: { ios_support: state.hasIOS, deep_link: state.needsDeeplink, user_identity: state.needsUserIdentity, revenue_tracking: state.needsRevenue },
         events: eventsSchema,
-        documentation: { sdk_guide: getHelpLink('/guides/getting-started-with-airbridge') }
+        documentation: { sdk_guide: getHelpLink('/developers/sdk-quickstart') }
       };
 
       const intro = isEn ? 'Implement Airbridge SDK integration based on this config:' : '아래 설정을 기반으로 Airbridge SDK를 연동해줘:';
@@ -2101,38 +2109,82 @@ ${template}
       spec += isEn ? `\n\n📌 EVENTS TO TRACK (${state.events.length})` : `\n\n📌 트래킹할 이벤트 (${state.events.length}개)`;
       state.events.forEach((e, i) => { spec += `\n${i + 1}. ${e.name} (${e.category})`; });
 
-      spec += isEn ? `\n\n📚 REFERENCE\n• ${getHelpLink('/guides/getting-started-with-airbridge')}` : `\n\n📚 참고 문서\n• ${getHelpLink('/guides/getting-started-with-airbridge')}`;
+      spec += isEn ? `\n\n📚 REFERENCE\n• ${getHelpLink('/developers/sdk-quickstart')}` : `\n\n📚 참고 문서\n• ${getHelpLink('/developers/sdk-quickstart')}`;
       return spec;
     }
 
     async function showDashboardVerification() {
       const isEn = state.language === 'en';
 
-      // Dashboard configuration checklist
+      // Dashboard configuration checklist with detailed instructions
       let dashboardChecks = '';
       if (state.hasAds) {
         dashboardChecks += `
-          <label class="checklist-item">
-            <input type="checkbox" class="verify-check" onchange="updateFinalVerifyButton()">
-            <span class="icon">☐</span>
-            <span class="content">${isEn ? '[Integrations] → [Ad Channel] - Connected ad channels' : '[Integrations] → [Ad Channel] - 광고 채널 연동 완료'}</span>
-          </label>`;
+          <div class="feature-card" style="margin-bottom: 12px;">
+            <div class="feature-card-header">
+              <span class="icon">📢</span>
+              <h5>${isEn ? 'Ad Channel Integration' : '광고 채널 연동'}</h5>
+            </div>
+            <p>${isEn ? 'Connect your ad channels to measure campaign performance.' : '캠페인 성과를 측정하려면 광고 채널을 연동해야 해요.'}</p>
+            <div class="detail-steps">
+              <ol>
+                <li>${isEn ? 'Go to <strong>[Integrations]</strong> in the left menu' : '왼쪽 메뉴에서 <strong>[Integrations]</strong> 클릭'}</li>
+                <li>${isEn ? 'Click <strong>[Ad Channel]</strong> tab' : '<strong>[Ad Channel]</strong> 탭 선택'}</li>
+                <li>${isEn ? 'Find and click your ad channel (Facebook, Google, etc.)' : '사용 중인 광고 채널 찾아서 클릭 (Facebook, Google 등)'}</li>
+                <li>${isEn ? 'Enter API credentials from your ad platform' : '광고 플랫폼에서 발급받은 API 정보 입력'}</li>
+              </ol>
+            </div>
+            <label class="checklist-item" style="margin-top: 12px; cursor: pointer;">
+              <input type="checkbox" class="dashboard-check" onchange="updateDashboardCheckIcon(this)">
+              <span class="icon">☐</span>
+              <span class="content">${isEn ? 'Ad channel connected' : '광고 채널 연동 완료'}</span>
+            </label>
+          </div>`;
       }
       if (state.needsDeeplink) {
         dashboardChecks += `
-          <label class="checklist-item">
-            <input type="checkbox" class="verify-check" onchange="updateFinalVerifyButton()">
-            <span class="icon">☐</span>
-            <span class="content">${isEn ? '[Settings] → [Deep Link] - URI Scheme configured' : '[Settings] → [Deep Link] - URI Scheme 설정 완료'}</span>
-          </label>`;
+          <div class="feature-card" style="margin-bottom: 12px;">
+            <div class="feature-card-header">
+              <span class="icon">🔗</span>
+              <h5>${isEn ? 'Deep Link Configuration' : '딥링크 설정'}</h5>
+            </div>
+            <p>${isEn ? 'Configure deep link settings to enable direct app navigation.' : '앱 내 특정 화면으로 이동하려면 딥링크 설정이 필요해요.'}</p>
+            <div class="detail-steps">
+              <ol>
+                <li>${isEn ? 'Go to <strong>[Settings]</strong> in the left menu' : '왼쪽 메뉴에서 <strong>[Settings]</strong> 클릭'}</li>
+                <li>${isEn ? 'Click <strong>[Deep Link]</strong>' : '<strong>[Deep Link]</strong> 선택'}</li>
+                <li>${isEn ? 'Enter your <strong>URI Scheme</strong> (e.g., myapp://)' : '<strong>URI Scheme</strong> 입력 (예: myapp://)'}</li>
+                <li>${isEn ? 'Configure Universal Link domain if using iOS' : 'iOS라면 Universal Link 도메인도 설정'}</li>
+              </ol>
+            </div>
+            <label class="checklist-item" style="margin-top: 12px; cursor: pointer;">
+              <input type="checkbox" class="dashboard-check" onchange="updateDashboardCheckIcon(this)">
+              <span class="icon">☐</span>
+              <span class="content">${isEn ? 'Deep link configured' : '딥링크 설정 완료'}</span>
+            </label>
+          </div>`;
       }
       if (state.hasIOS) {
         dashboardChecks += `
-          <label class="checklist-item">
-            <input type="checkbox" class="verify-check" onchange="updateFinalVerifyButton()">
-            <span class="icon">☐</span>
-            <span class="content">${isEn ? '[Settings] → [SKAN] - SKAN configured' : '[Settings] → [SKAN] - SKAN 설정 완료'}</span>
-          </label>`;
+          <div class="feature-card" style="margin-bottom: 12px;">
+            <div class="feature-card-header">
+              <span class="icon">📊</span>
+              <h5>${isEn ? 'SKAN Configuration' : 'SKAN 설정'}</h5>
+            </div>
+            <p>${isEn ? 'Configure SKAdNetwork for iOS ad measurement when ATT is denied.' : 'ATT가 거부되어도 iOS 광고 성과를 측정하려면 SKAN 설정이 필요해요.'}</p>
+            <div class="detail-steps">
+              <ol>
+                <li>${isEn ? 'Go to <strong>[Settings]</strong> in the left menu' : '왼쪽 메뉴에서 <strong>[Settings]</strong> 클릭'}</li>
+                <li>${isEn ? 'Click <strong>[SKAN]</strong>' : '<strong>[SKAN]</strong> 선택'}</li>
+                <li>${isEn ? 'Enable SKAN and configure conversion values' : 'SKAN 활성화 후 전환값 설정'}</li>
+              </ol>
+            </div>
+            <label class="checklist-item" style="margin-top: 12px; cursor: pointer;">
+              <input type="checkbox" class="dashboard-check" onchange="updateDashboardCheckIcon(this)">
+              <span class="icon">☐</span>
+              <span class="content">${isEn ? 'SKAN configured' : 'SKAN 설정 완료'}</span>
+            </label>
+          </div>`;
       }
 
       if (dashboardChecks) {
@@ -2140,9 +2192,7 @@ ${template}
           <div class="dashboard-guide">
             <h4>${getText('dashboardCheckTitle')}</h4>
             <p style="margin-bottom: 12px;">${getText('dashboardCheckDesc')}</p>
-            <div class="checklist" id="dashboardChecklist">
-              ${dashboardChecks}
-            </div>
+            ${dashboardChecks}
             <div style="margin-top: 12px;">
               <a href="https://app.airbridge.io" target="_blank" class="submit-btn help-btn" style="text-decoration: none; text-align: center; display: block;">🔍 ${getText('checkingDashboard')}</a>
             </div>
@@ -2151,6 +2201,11 @@ ${template}
       }
 
       await showVerificationGuide();
+    }
+
+    function updateDashboardCheckIcon(checkbox) {
+      const icon = checkbox.parentElement.querySelector('.icon');
+      icon.textContent = checkbox.checked ? '✅' : '☐';
     }
 
     async function showVerificationGuide() {
@@ -2251,7 +2306,7 @@ ${template}
           <div class="checklist-item"><span class="icon">5️⃣</span><span class="content">${getText('troubleshoot5')}</span></div>
         </div>
         <div style="margin-top: 12px;">
-          <a href="${getHelpLink('/guides/troubleshooting')}" target="_blank" class="submit-btn secondary" style="text-decoration: none; text-align: center; display: block;">📚 ${state.language === 'en' ? 'View Troubleshooting Guide' : '문제 해결 가이드 보기'}</a>
+          <a href="${getHelpLink('/developers')}" target="_blank" class="submit-btn secondary" style="text-decoration: none; text-align: center; display: block;">📚 ${state.language === 'en' ? 'View Troubleshooting Guide' : '문제 해결 가이드 보기'}</a>
         </div>
       `);
     }
