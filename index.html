@@ -306,15 +306,19 @@
     }
 
     .submit-btn.help-btn {
-      background: #1e293b;
-      color: #ffffff;
-      border: 2px solid #1e293b;
-      font-weight: 600;
+      background: linear-gradient(135deg, #fbbf24, #f59e0b);
+      color: #78350f;
+      border: 2px solid #f59e0b;
+      font-weight: 700;
+      font-size: 15px;
+      padding: 14px 18px;
+      box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3);
     }
 
     .submit-btn.help-btn:hover:not(:disabled) {
-      background: #0f172a;
-      box-shadow: 0 4px 12px rgba(30, 41, 59, 0.4);
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      box-shadow: 0 4px 16px rgba(245, 158, 11, 0.5);
+      transform: translateY(-2px);
     }
 
     .btn-row {
@@ -659,15 +663,23 @@
     .help-link {
       display: inline-flex;
       align-items: center;
-      gap: 4px;
+      gap: 6px;
       color: #4F46E5;
-      font-size: 12px;
+      font-size: 14px;
+      font-weight: 600;
       text-decoration: none;
-      margin-top: 8px;
+      margin-top: 12px;
+      padding: 10px 14px;
+      background: linear-gradient(135deg, #ede9fe, #ddd6fe);
+      border-radius: 8px;
+      transition: all 0.2s ease;
     }
 
     .help-link:hover {
-      text-decoration: underline;
+      background: linear-gradient(135deg, #ddd6fe, #c4b5fd);
+      color: #3730a3;
+      transform: translateX(4px);
+      text-decoration: none;
     }
 
     .dashboard-guide {
@@ -1481,7 +1493,7 @@
           </label>
         </div>
         <div class="btn-row" style="margin-top: 12px;">
-          <a href="https://app.airbridge.io" target="_blank" class="submit-btn help-btn" style="text-decoration: none; text-align: center;">🔍 ${getText('verifyHelpBtn')}</a>
+          <a href="${getHelpLink('/developers/getting-started')}" target="_blank" class="submit-btn help-btn" style="text-decoration: none; text-align: center;">🔍 ${getText('verifyHelpBtn')}</a>
           <button class="submit-btn" id="appVerifyBtn" onclick="confirmAppRegistration()" disabled>${getText('verifyConfirmBtn')}</button>
         </div>
       `);
@@ -1651,7 +1663,7 @@
           <p style="font-size: 11px; color: #64748b; margin: -4px 0 8px 4px;">${getText('appNameHelp')}</p>
           <input type="text" class="input-field" id="sdkTokenInput" placeholder="${getText('sdkTokenPlaceholder')}">
           <div class="btn-row">
-            <a href="https://app.airbridge.io" target="_blank" class="submit-btn help-btn" style="text-decoration: none; text-align: center; flex: 0 0 auto; padding: 12px;">🔍 ${getText('verifyHelpBtn')}</a>
+            <a href="${getHelpLink('/developers/sdk-quickstart')}" target="_blank" class="submit-btn help-btn" style="text-decoration: none; text-align: center; flex: 0 0 auto; padding: 12px;">🔍 ${getText('verifyHelpBtn')}</a>
             <button class="submit-btn" onclick="submitSDKToken()">${getText('next')}</button>
           </div>
         </div>
@@ -1702,7 +1714,7 @@
           </div>
         </div>
         <div class="btn-row" style="margin-top: 12px;">
-          <a href="https://app.airbridge.io" target="_blank" class="submit-btn help-btn" style="text-decoration: none; text-align: center;">🔍 ${getText('verifyHelpBtn')}</a>
+          <a href="${getHelpLink('/developers/sdk-quickstart')}" target="_blank" class="submit-btn help-btn" style="text-decoration: none; text-align: center;">🔍 ${getText('verifyHelpBtn')}</a>
           <button class="submit-btn" id="tokenVerifyBtn" onclick="confirmTokenVerification()" disabled>${getText('verifyConfirmBtn')}</button>
         </div>
       `);
@@ -1871,7 +1883,7 @@
                 <li>${getText('attributionStep4')}</li>
               </ol>
             </div>
-            <a href="${getHelpLink('/guides/attribution-overview')}" target="_blank" class="help-link">${getText('attributionHelpLink')} →</a>
+            <a href="${getHelpLink('/guides/airbridge-attribution-model')}" target="_blank" class="help-link">${getText('attributionHelpLink')} →</a>
           </div>
         `);
       }
@@ -1924,7 +1936,7 @@
                 <li>${getText('deeplinkDashboardStep3')}</li>
               </ol>
             </div>
-            <a href="${getHelpLink('/deeplink-guides/understanding-deep-link')}" target="_blank" class="help-link">${getText('deeplinkHelpLink')} →</a>
+            <a href="${getHelpLink('/guides/understanding-deep-link')}" target="_blank" class="help-link">${getText('deeplinkHelpLink')} →</a>
           </div>
         `);
       }
@@ -2194,7 +2206,7 @@ ${template}
             <p style="margin-bottom: 12px;">${getText('dashboardCheckDesc')}</p>
             ${dashboardChecks}
             <div style="margin-top: 12px;">
-              <a href="https://app.airbridge.io" target="_blank" class="submit-btn help-btn" style="text-decoration: none; text-align: center; display: block;">🔍 ${getText('checkingDashboard')}</a>
+              <a href="${getHelpLink('/guides/integration-overview')}" target="_blank" class="submit-btn help-btn" style="text-decoration: none; text-align: center; display: block;">🔍 ${getText('checkingDashboard')}</a>
             </div>
           </div>
         `, { delay: 400 });
