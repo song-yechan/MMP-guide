@@ -1,0 +1,1802 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Airbridge SDK Integration Guide</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 20px;
+    }
+
+    .chat-container {
+      width: 100%;
+      max-width: 480px;
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      overflow: hidden;
+      margin: 20px auto;
+    }
+
+    .chat-header {
+      background: linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%);
+      color: white;
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .chat-header-icon {
+      width: 40px;
+      height: 40px;
+      background: rgba(255,255,255,0.2);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+    }
+
+    .chat-header-text h1 {
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    .chat-header-text p {
+      font-size: 12px;
+      opacity: 0.8;
+      margin-top: 2px;
+    }
+
+    .progress-bar {
+      background: #f1f5f9;
+      padding: 12px 16px;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    .progress-steps {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11px;
+      color: #64748b;
+      margin-bottom: 8px;
+    }
+
+    .progress-steps span {
+      padding: 4px 8px;
+      border-radius: 12px;
+      background: #e2e8f0;
+      transition: all 0.3s;
+    }
+
+    .progress-steps span.active {
+      background: #4F46E5;
+      color: white;
+    }
+
+    .progress-steps span.completed {
+      background: #22c55e;
+      color: white;
+    }
+
+    .progress-track {
+      height: 4px;
+      background: #e2e8f0;
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #4F46E5, #7C3AED);
+      width: 0%;
+      transition: width 0.5s ease;
+    }
+
+    .chat-messages {
+      height: 500px;
+      overflow-y: auto;
+      padding: 16px;
+      background: #f8fafc;
+    }
+
+    .message {
+      margin-bottom: 16px;
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .bot-message {
+      display: flex;
+      gap: 8px;
+    }
+
+    .bot-avatar {
+      width: 32px;
+      height: 32px;
+      background: linear-gradient(135deg, #4F46E5, #7C3AED);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+
+    .bot-bubble {
+      background: white;
+      padding: 12px 16px;
+      border-radius: 0 16px 16px 16px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      max-width: 85%;
+      font-size: 14px;
+      line-height: 1.5;
+      color: #1e293b;
+    }
+
+    .user-message {
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .user-bubble {
+      background: linear-gradient(135deg, #4F46E5, #7C3AED);
+      color: white;
+      padding: 12px 16px;
+      border-radius: 16px 0 16px 16px;
+      max-width: 85%;
+      font-size: 14px;
+    }
+
+    .typing-indicator {
+      display: flex;
+      gap: 4px;
+      padding: 8px 0;
+    }
+
+    .typing-dot {
+      width: 8px;
+      height: 8px;
+      background: #94a3b8;
+      border-radius: 50%;
+      animation: typing 1.4s infinite;
+    }
+
+    .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+    .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+    @keyframes typing {
+      0%, 60%, 100% { transform: translateY(0); }
+      30% { transform: translateY(-8px); }
+    }
+
+    .options-container {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .options-row {
+      display: flex;
+      gap: 8px;
+    }
+
+    .option-btn {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 16px;
+      background: white;
+      border: 2px solid #e2e8f0;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-size: 14px;
+      color: #1e293b;
+      width: 100%;
+      text-align: left;
+    }
+
+    .option-btn:hover {
+      border-color: #4F46E5;
+      background: #f5f3ff;
+    }
+
+    .option-icon { font-size: 18px; }
+
+    .input-container {
+      margin-top: 12px;
+    }
+
+    .input-field {
+      width: 100%;
+      padding: 12px;
+      border: 2px solid #e2e8f0;
+      border-radius: 10px;
+      font-size: 14px;
+      margin-bottom: 8px;
+      transition: border-color 0.2s;
+    }
+
+    .input-field:focus {
+      outline: none;
+      border-color: #4F46E5;
+    }
+
+    textarea.input-field {
+      min-height: 80px;
+      resize: vertical;
+    }
+
+    .submit-btn {
+      width: 100%;
+      padding: 12px;
+      background: linear-gradient(135deg, #4F46E5, #7C3AED);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .submit-btn:hover:not(:disabled) {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(79, 70, 229, 0.4);
+    }
+
+    .submit-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .submit-btn.secondary {
+      background: #f1f5f9;
+      color: #475569;
+    }
+
+    .submit-btn.secondary:hover:not(:disabled) {
+      background: #e2e8f0;
+      box-shadow: none;
+      transform: none;
+    }
+
+    .btn-row {
+      display: flex;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .btn-row .submit-btn { flex: 1; }
+
+    .code-block {
+      background: #1e293b;
+      color: #e2e8f0;
+      padding: 16px;
+      border-radius: 10px;
+      font-family: 'SF Mono', Monaco, monospace;
+      font-size: 12px;
+      overflow-x: auto;
+      margin-top: 12px;
+      position: relative;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+
+    .copy-btn {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      padding: 4px 12px;
+      background: #475569;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 11px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .copy-btn:hover { background: #64748b; }
+    .copy-btn.copied { background: #22c55e; }
+
+    .chip {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .chip.green { background: #dcfce7; color: #16a34a; }
+    .chip.orange { background: #ffedd5; color: #ea580c; }
+    .chip.blue { background: #dbeafe; color: #2563eb; }
+
+    .warning-box {
+      background: #fef3c7;
+      border-left: 4px solid #f59e0b;
+      padding: 12px 14px;
+      border-radius: 0 8px 8px 0;
+      margin-top: 12px;
+      font-size: 13px;
+      color: #92400e;
+    }
+
+    .info-box {
+      background: #dbeafe;
+      border-left: 4px solid #3b82f6;
+      padding: 12px 14px;
+      border-radius: 0 8px 8px 0;
+      margin-top: 12px;
+      font-size: 13px;
+      color: #1e40af;
+    }
+
+    .success-box {
+      background: #dcfce7;
+      border-left: 4px solid #22c55e;
+      padding: 12px 14px;
+      border-radius: 0 8px 8px 0;
+      margin-top: 12px;
+      font-size: 13px;
+      color: #166534;
+    }
+
+    .error-box {
+      background: #fee2e2;
+      border-left: 4px solid #ef4444;
+      padding: 12px 14px;
+      border-radius: 0 8px 8px 0;
+      margin-top: 12px;
+      font-size: 13px;
+      color: #991b1b;
+    }
+
+    .step-box {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 16px;
+      margin-top: 12px;
+    }
+
+    .step-box h4 {
+      font-size: 14px;
+      color: #1e293b;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .step-box ol, .step-box ul {
+      padding-left: 20px;
+      font-size: 13px;
+      color: #475569;
+    }
+
+    .step-box li { margin-bottom: 8px; }
+    .step-box li:last-child { margin-bottom: 0; }
+
+    .checklist {
+      margin-top: 12px;
+    }
+
+    .checklist-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 10px 14px;
+      background: #f8fafc;
+      border-radius: 10px;
+      margin-bottom: 8px;
+      font-size: 13px;
+      color: #475569;
+    }
+
+    .checklist-item:last-child { margin-bottom: 0; }
+
+    .checklist-item input[type="checkbox"] {
+      display: none;
+    }
+
+    .checklist-item label, label.checklist-item {
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+
+    .checklist-item label:hover, label.checklist-item:hover {
+      background-color: #f1f5f9;
+    }
+
+    .checklist-item .icon {
+      flex-shrink: 0;
+      width: 20px;
+      height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .checklist-item.done { background: #dcfce7; color: #166534; }
+    .checklist-item.pending { background: #fef3c7; color: #92400e; }
+
+    .feature-card {
+      background: white;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 16px;
+      margin-top: 12px;
+    }
+
+    .feature-card-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+
+    .feature-card-header .icon { font-size: 20px; }
+
+    .feature-card-header h5 {
+      font-size: 14px;
+      color: #1e293b;
+      font-weight: 600;
+    }
+
+    .feature-card p {
+      font-size: 13px;
+      color: #64748b;
+      margin-bottom: 12px;
+    }
+
+    .mock-ui {
+      background: #1e293b;
+      border-radius: 8px;
+      padding: 12px;
+      margin-top: 12px;
+    }
+
+    .mock-ui-header {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 8px;
+    }
+
+    .mock-ui-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+
+    .mock-ui-dot.red { background: #ef4444; }
+    .mock-ui-dot.yellow { background: #f59e0b; }
+    .mock-ui-dot.green { background: #22c55e; }
+
+    .mock-ui-content {
+      font-family: 'SF Mono', Monaco, monospace;
+      font-size: 11px;
+      color: #94a3b8;
+    }
+
+    .mock-ui-row {
+      padding: 4px 8px;
+      border-radius: 4px;
+      margin-bottom: 4px;
+    }
+
+    .mock-ui-row:last-child { margin-bottom: 0; }
+    .mock-ui-row.highlight { background: rgba(34, 197, 94, 0.2); color: #4ade80; }
+    .mock-ui-row .time { color: #64748b; }
+    .mock-ui-row .event { color: #38bdf8; }
+    .mock-ui-row .category { color: #fbbf24; }
+
+    .summary-table {
+      width: 100%;
+      margin-top: 12px;
+      border-collapse: collapse;
+      font-size: 12px;
+    }
+
+    .summary-table th, .summary-table td {
+      padding: 8px 10px;
+      border: 1px solid #e2e8f0;
+      text-align: left;
+    }
+
+    .summary-table th {
+      background: #f8fafc;
+      font-weight: 600;
+      color: #475569;
+    }
+
+    .summary-table td { color: #64748b; }
+
+    .success-animation {
+      text-align: center;
+      padding: 20px;
+    }
+
+    .success-icon {
+      font-size: 48px;
+      margin-bottom: 12px;
+      animation: successPop 0.5s ease-out;
+    }
+
+    @keyframes successPop {
+      0% { transform: scale(0); }
+      50% { transform: scale(1.2); }
+      100% { transform: scale(1); }
+    }
+
+    a { color: #4F46E5; }
+
+    .submit-btn {
+      color: white !important;
+      text-decoration: none !important;
+    }
+
+    a.submit-btn {
+      display: block;
+      text-align: center;
+      color: white !important;
+    }
+
+    a.submit-btn:visited,
+    a.submit-btn:hover,
+    a.submit-btn:active {
+      color: white !important;
+    }
+  </style>
+</head>
+<body>
+  <div class="chat-container">
+    <div class="chat-header">
+      <div class="chat-header-icon">🚀</div>
+      <div class="chat-header-text">
+        <h1>Airbridge SDK Integration Guide</h1>
+        <p>Configure only what you need</p>
+      </div>
+    </div>
+
+    <div class="progress-bar">
+      <div class="progress-steps">
+        <span id="step1">Setup</span>
+        <span id="step2">Events</span>
+        <span id="step3">Features</span>
+        <span id="step4">Done</span>
+      </div>
+      <div class="progress-track">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+    </div>
+
+    <div class="chat-messages" id="chatMessages"></div>
+  </div>
+
+  <script>
+    // ========== STATE ==========
+    const state = {
+      language: '',
+      implementationMethod: '',
+      appRegistered: false,
+      appMode: '',
+      platform: '',
+      appName: '',
+      sdkToken: '',
+      hasIOS: false,
+      hasAds: false,
+      needsDeeplink: false,
+      needsUserIdentity: false,
+      needsRevenue: false,
+      events: [],
+      templateParts: { core: '', ios: '', deeplink: '', userIdentity: '', revenue: '' }
+    };
+
+    // ========== TRANSLATIONS ==========
+    const t = {
+      ko: {
+        headerTitle: 'Airbridge SDK 연동 가이드',
+        headerSubtitle: '필요한 것만 골라서 설정하기',
+        step1: '기본설정',
+        step2: '이벤트',
+        step3: '추가기능',
+        step4: '완료',
+        selectLanguage: '언어를 선택해주세요',
+        langKorean: '한국어',
+        langEnglish: 'English',
+        welcome1: '안녕하세요! 👋',
+        welcome2: '<strong>Airbridge SDK 연동</strong>을 도와드릴게요.',
+        welcome3: '필요한 기능만 선택해서 <strong>맞춤형 템플릿</strong>을 만들어드립니다.',
+        askAppRegistered: '먼저, <strong>Airbridge 대시보드에 앱을 등록</strong>하셨나요?',
+        yesRegistered: '네, 등록했어요',
+        notYet: '아직이요',
+        registerFirst: '먼저 앱을 등록해야 해요.',
+        registerStepTitle: '📝 앱 등록하기',
+        registerStep1: '접속',
+        registerStep2: '로그인 후 <strong>+ 버튼</strong> 클릭',
+        registerStep3: '앱 정보 입력',
+        unchangeableWarning: '⚠️ <strong>등록 후 변경 불가:</strong>',
+        unchangeableItems: '• App Name (소문자+숫자만)<br>• App Mode (Production/Development)<br>• Time Zone, Currency',
+        testAppTip: '💡 테스트용 앱은 이름에 "dev" 또는 "test" 포함 권장',
+        registrationDone: '등록 완료했어요!',
+        askAppMode: '앱을 어떤 <strong>모드</strong>로 등록하셨나요?',
+        appModeWarning: '⚠️ 앱 모드는 등록 후 변경할 수 없어요',
+        productionMode: '운영 모드',
+        productionModeDesc: '앱마켓 출시용 (실제 캠페인 운영)',
+        developmentMode: '개발 모드',
+        developmentModeDesc: '테스트/스테이징용 (내부 테스트)',
+        selectedProduction: '운영 모드로 등록했어요',
+        selectedDevelopment: '개발 모드로 등록했어요',
+        productionTip: '✅ 실제 캠페인 성과를 측정할 수 있어요.',
+        developmentTip: '✅ 테스트 데이터가 운영 데이터와 섞이지 않아요.',
+        askImplementation: '<strong>SDK 연동을 어떻게 진행하시나요?</strong>',
+        implAI: 'AI로 직접 구현',
+        implAIDesc: 'Claude Code 등으로 직접 개발',
+        implDevTeam: '개발팀에 요청',
+        implDevTeamDesc: '요구사항을 정리해서 전달',
+        implAISelected: 'AI로 직접 구현할게요',
+        implDevTeamSelected: '개발팀에 요청할 거예요',
+        implAIResponse: '좋아요! 💪 Claude Code에서 바로 사용할 수 있는 <strong>프롬프트 템플릿</strong>을 만들어드릴게요.',
+        implDevTeamResponse: '알겠어요! 개발팀에게 전달할 수 있는 <strong>요구사항 명세서</strong>와 <strong>확인 체크리스트</strong>를 만들어드릴게요.',
+        askPlatform: '어떤 플랫폼으로 개발하고 있나요?',
+        askiOSSupport: '이 앱이 <strong>iOS도 지원</strong>하나요?',
+        iOSTip: '💡 iOS 앱이면 추가 설정(ATT, SKAN)이 필요해요',
+        yesiOS: '네, iOS 지원해요',
+        androidOnly: 'Android만이요',
+        askSDKToken: '이제 <strong>SDK 토큰</strong>을 입력해주세요.',
+        tokenLocationTitle: '📍 토큰 찾는 곳',
+        tokenStep1: '→ 앱 선택',
+        tokenStep2: '<strong>Settings</strong> (⚙️) 클릭',
+        tokenStep3: '<strong>Tokens</strong> 탭에서 복사',
+        appNamePlaceholder: 'App Name (예: myshop)',
+        sdkTokenPlaceholder: 'SDK Token (32자리)',
+        next: '다음',
+        basicInfoDone: '기본 정보 입력 완료! ✅',
+        askEvents: '이제 <strong>트래킹할 이벤트</strong>를 정할게요.',
+        basicEventsIncluded: '기본 이벤트(회원가입, 로그인)는 자동으로 포함됩니다.',
+        signUp: '회원가입',
+        signIn: '로그인',
+        askRevenue: '<strong>구매/결제 같은 매출 이벤트</strong>를 트래킹하고 싶으세요?',
+        revenueTip: '💡 매출 이벤트를 추가하면 ROAS(광고수익률) 분석이 가능해요',
+        yesNeed: '네, 필요해요',
+        skip: '아니요, 건너뛸게요',
+        revenueNeeded: '매출 이벤트 필요해요',
+        skipped: '건너뛸게요',
+        revenueAdded: '매출 관련 이벤트를 추가했어요:',
+        productViewed: '상품 조회',
+        addToCart: '장바구니 추가',
+        orderCompleted: '구매 완료',
+        askAdditionalEvents: '<strong>추가로 트래킹하고 싶은 이벤트</strong>가 있나요?',
+        addCustom: '직접 추가할게요',
+        enough: '이 정도면 충분해요',
+        customEventTitle: '📝 추가 이벤트 입력',
+        customEventDesc: '이벤트를 한 줄씩 입력하세요',
+        customEventPlaceholder: '예:\n검색\n공유\n좋아요',
+        addEvents: '추가하기',
+        eventsAdded: '이벤트를 추가했어요:',
+        askAds: '<strong>광고를 집행</strong>하고 계시나요?',
+        adsTip: '💡 광고 성과 측정을 위한 어트리뷰션 설정이 필요해요',
+        yesAds: '네, 광고해요',
+        noAds: '아니요',
+        adsYes: '광고하고 있어요',
+        adsNo: '광고 안 해요',
+        adsAddedInfo: '✅ 광고 성과 측정을 위해 채널 연동이 필요해요.',
+        adsNextStep: '대시보드 [Channel Integration]에서 광고 채널을 연동하세요.',
+        askDeeplink: '<strong>딥링크(앱 내 특정 화면으로 이동)</strong>가 필요하세요?',
+        deeplinkTip: '💡 광고 클릭 → 앱 설치 → 특정 화면 이동에 사용',
+        yesDeeplink: '네, 필요해요',
+        noDeeplink: '필요 없어요',
+        deeplinkNeeded: '딥링크 필요해요',
+        deeplinkNotNeeded: '딥링크 필요 없어요',
+        deeplinkAdded: '✅ 딥링크 설정을 템플릿에 포함할게요.',
+        askUserIdentity: '<strong>로그인한 유저를 식별</strong>해야 하나요?',
+        userIdentityTip: '💡 크로스 디바이스 추적, 유저별 분석에 필요',
+        yesUserIdentity: '네, 필요해요',
+        noUserIdentity: '필요 없어요',
+        userIdentityNeeded: '유저 식별 필요해요',
+        userIdentityNotNeeded: '유저 식별 필요 없어요',
+        userIdentityAdded: '✅ 유저 식별자 설정을 템플릿에 포함할게요.',
+        summaryItem: '항목',
+        summarySetting: '설정',
+        summaryPlatform: '플랫폼',
+        summaryiOS: 'iOS 지원',
+        summaryEvents: '이벤트',
+        summaryRevenue: '매출 트래킹',
+        summaryDeeplink: '딥링크',
+        summaryUserIdentity: '유저 식별자',
+        summaryATT: 'ATT 설정',
+        yes: '예',
+        no: '아니오',
+        pasteToClaudeCode: '아래 템플릿을 <strong>Claude Code</strong>에 붙여넣으세요:',
+        sendToDevTeam: '아래 <strong>요구사항 명세서</strong>를 개발팀에게 전달하세요:',
+        copy: '복사',
+        copied: '복사됨!',
+        verificationTitle: '<strong>연동 완료 후 확인 방법:</strong>',
+        realtimeLogTitle: '🔍 실시간 로그 확인',
+        verifyStep1: '앱 실행 (시뮬레이터/실기기)',
+        verifyStep2: '접속',
+        verifyStep3: '[Raw Data] → [App Real-time Log]',
+        verifyStep4: '이벤트 발생시키고 로그 확인',
+        verifySuccess: '✅ 이벤트가 1~2초 내에 보이면 성공!',
+        verifyDelay: '⚠️ 최근 10분 이내 이벤트는 조회 지연될 수 있어요',
+        eventNotShowing: '이벤트가 안 보여요',
+        troubleshootTitle: '<strong>문제 해결 체크리스트:</strong>',
+        troubleshoot1: 'SDK 토큰이 정확한가요?',
+        troubleshoot2: '앱 이름이 대시보드와 일치하나요?',
+        troubleshoot3: '이벤트 호출 코드가 실행되나요?',
+        troubleshoot4: '네트워크 연결 상태 확인',
+        askClaudeCode: 'Claude Code에 이렇게 요청하세요:',
+        askDevTeam: '<strong>개발팀에 확인 요청:</strong>',
+        nextStepsBtn: '다음 단계 안내',
+        restartBtn: '처음부터 다시',
+        nextStepsTitle: '<strong>연동 완료 후 할 일:</strong>',
+        channelIntegration: '<strong>광고 채널 연동</strong><br>대시보드 [Channel Integration]',
+        trackingLink: '<strong>트래킹 링크 생성</strong><br>대시보드 [Tracking Link]',
+        skanSetup: '<strong>SKAN 설정</strong><br>[Management] > [SKAN Conversion Value]',
+        deeplinkDomain: '<strong>딥링크 도메인 설정</strong><br>대시보드 [Deep Links]',
+        waitData: '<strong>1~2일 대기</strong><br>데이터 충분히 수집 후 리포트 확인',
+        congrats: '수고하셨습니다!',
+        congratsSubtitle: 'Airbridge 연동이 완료되었습니다.',
+        helpCenter: '📚 Airbridge 도움말 센터',
+        onPayment: '결제 완료 시',
+        onProductView: '상품 상세 진입',
+        onAddToCart: '장바구니 담기',
+        onAction: '해당 액션 시',
+        verifyBeforeProceed: '진행하기 전에 확인해주세요:',
+        verifyAppRegistration: '앱 등록 확인',
+        verifyAppCheck1: '대시보드에서 앱이 보이나요?',
+        verifyAppCheck2: '앱 이름이 정확한가요?',
+        verifyAppCheck3: 'Settings 메뉴에 접근 가능한가요?',
+        verifyConfirmBtn: '✅ 확인 완료',
+        verifyHelpBtn: '❓ 도움이 필요해요',
+        tokenValid: '✅ 토큰 형식이 올바릅니다',
+        tokenInvalid: '⚠️ 토큰 형식을 확인해주세요 (32자리 영문/숫자)',
+        tokenVerifyTitle: 'SDK 토큰 검증',
+        tokenVerifyDesc: '입력한 토큰이 맞는지 대시보드에서 확인하세요',
+        tokenVerifyStep1: 'app.airbridge.io → 앱 선택',
+        tokenVerifyStep2: 'Settings (⚙️) → Tokens 탭',
+        tokenVerifyStep3: 'SDK Token 값과 일치하는지 확인',
+        tokenMismatchWarning: '토큰이 다르면 이벤트가 전송되지 않습니다'
+      },
+      en: {
+        headerTitle: 'Airbridge SDK Integration Guide',
+        headerSubtitle: 'Configure only what you need',
+        step1: 'Setup',
+        step2: 'Events',
+        step3: 'Features',
+        step4: 'Done',
+        selectLanguage: 'Select your language',
+        langKorean: '한국어',
+        langEnglish: 'English',
+        welcome1: 'Hello! 👋',
+        welcome2: "I'll help you with <strong>Airbridge SDK integration</strong>.",
+        welcome3: 'Select only the features you need and get a <strong>customized template</strong>.',
+        askAppRegistered: 'First, have you <strong>registered your app in the Airbridge dashboard</strong>?',
+        yesRegistered: 'Yes, registered',
+        notYet: 'Not yet',
+        registerFirst: 'You need to register your app first.',
+        registerStepTitle: '📝 Register App',
+        registerStep1: 'Go to',
+        registerStep2: 'After login, click <strong>+ button</strong>',
+        registerStep3: 'Enter app information',
+        unchangeableWarning: '⚠️ <strong>Cannot change after registration:</strong>',
+        unchangeableItems: '• App Name (lowercase + numbers only)<br>• App Mode (Production/Development)<br>• Time Zone, Currency',
+        testAppTip: '💡 For test apps, include "dev" or "test" in the name',
+        registrationDone: "Done registering!",
+        askAppMode: 'Which <strong>mode</strong> did you register the app in?',
+        appModeWarning: '⚠️ App mode cannot be changed after registration',
+        productionMode: 'Production',
+        productionModeDesc: 'For app store release (real campaigns)',
+        developmentMode: 'Development',
+        developmentModeDesc: 'For testing/staging (internal use)',
+        selectedProduction: 'Registered in Production mode',
+        selectedDevelopment: 'Registered in Development mode',
+        productionTip: '✅ You can measure real campaign performance.',
+        developmentTip: '✅ Test data stays separate from production data.',
+        askImplementation: '<strong>How will you implement the SDK?</strong>',
+        implAI: 'Implement with AI',
+        implAIDesc: 'Develop directly with Claude Code, etc.',
+        implDevTeam: 'Request to Dev Team',
+        implDevTeamDesc: 'Organize requirements to hand off',
+        implAISelected: "I'll implement with AI",
+        implDevTeamSelected: "I'll request to dev team",
+        implAIResponse: "Great! 💪 I'll create a <strong>prompt template</strong> you can use directly in Claude Code.",
+        implDevTeamResponse: "Got it! I'll create a <strong>requirements spec</strong> and <strong>verification checklist</strong> you can share with your dev team.",
+        askPlatform: 'What platform are you developing on?',
+        askiOSSupport: 'Does this app <strong>support iOS</strong>?',
+        iOSTip: '💡 iOS apps require additional settings (ATT, SKAN)',
+        yesiOS: 'Yes, supports iOS',
+        androidOnly: 'Android only',
+        askSDKToken: 'Now, please enter your <strong>SDK token</strong>.',
+        tokenLocationTitle: '📍 Where to find token',
+        tokenStep1: '→ Select app',
+        tokenStep2: 'Click <strong>Settings</strong> (⚙️)',
+        tokenStep3: 'Copy from <strong>Tokens</strong> tab',
+        appNamePlaceholder: 'App Name (e.g., myshop)',
+        sdkTokenPlaceholder: 'SDK Token (32 characters)',
+        next: 'Next',
+        basicInfoDone: 'Basic info complete! ✅',
+        askEvents: "Now let's define the <strong>events to track</strong>.",
+        basicEventsIncluded: 'Basic events (sign up, sign in) are automatically included.',
+        signUp: 'Sign Up',
+        signIn: 'Sign In',
+        askRevenue: 'Do you want to track <strong>purchase/payment revenue events</strong>?',
+        revenueTip: '💡 Adding revenue events enables ROAS (Return on Ad Spend) analysis',
+        yesNeed: 'Yes, I need it',
+        skip: 'No, skip',
+        revenueNeeded: 'I need revenue events',
+        skipped: "I'll skip",
+        revenueAdded: 'Added revenue-related events:',
+        productViewed: 'Product Viewed',
+        addToCart: 'Add to Cart',
+        orderCompleted: 'Order Completed',
+        askAdditionalEvents: 'Do you have <strong>additional events to track</strong>?',
+        addCustom: "I'll add custom events",
+        enough: "This is enough",
+        customEventTitle: '📝 Add Custom Events',
+        customEventDesc: 'Enter one event per line',
+        customEventPlaceholder: 'e.g.:\nSearch\nShare\nLike',
+        addEvents: 'Add Events',
+        eventsAdded: 'Events added:',
+        askAds: 'Are you <strong>running ads</strong>?',
+        adsTip: '💡 Attribution setup is needed for ad performance measurement',
+        yesAds: 'Yes, running ads',
+        noAds: 'No',
+        adsYes: 'Running ads',
+        adsNo: 'Not running ads',
+        adsAddedInfo: '✅ Channel integration is needed for ad performance measurement.',
+        adsNextStep: 'Connect your ad channels in dashboard [Channel Integration].',
+        askDeeplink: 'Do you need <strong>deep linking</strong>?',
+        deeplinkTip: '💡 Used for: Ad click → App install → Navigate to specific screen',
+        yesDeeplink: 'Yes, I need it',
+        noDeeplink: "Don't need it",
+        deeplinkNeeded: 'I need deep linking',
+        deeplinkNotNeeded: "Don't need deep linking",
+        deeplinkAdded: "✅ I'll include deep link setup in the template.",
+        askUserIdentity: 'Do you need to <strong>identify logged-in users</strong>?',
+        userIdentityTip: '💡 Required for cross-device tracking, per-user analysis',
+        yesUserIdentity: 'Yes, I need it',
+        noUserIdentity: "Don't need it",
+        userIdentityNeeded: 'I need user identification',
+        userIdentityNotNeeded: "Don't need user identification",
+        userIdentityAdded: "✅ I'll include user identity setup in the template.",
+        summaryItem: 'Item',
+        summarySetting: 'Setting',
+        summaryPlatform: 'Platform',
+        summaryiOS: 'iOS Support',
+        summaryEvents: 'Events',
+        summaryRevenue: 'Revenue Tracking',
+        summaryDeeplink: 'Deep Link',
+        summaryUserIdentity: 'User Identity',
+        summaryATT: 'ATT Setup',
+        yes: 'Yes',
+        no: 'No',
+        pasteToClaudeCode: 'Paste the template below into <strong>Claude Code</strong>:',
+        sendToDevTeam: 'Send the <strong>requirements spec</strong> below to your dev team:',
+        copy: 'Copy',
+        copied: 'Copied!',
+        verificationTitle: '<strong>How to verify after integration:</strong>',
+        realtimeLogTitle: '🔍 Check Real-time Log',
+        verifyStep1: 'Run app (simulator/real device)',
+        verifyStep2: 'Go to',
+        verifyStep3: '[Raw Data] → [App Real-time Log]',
+        verifyStep4: 'Trigger events and check logs',
+        verifySuccess: '✅ Success if events appear within 1-2 seconds!',
+        verifyDelay: '⚠️ Events from the last 10 minutes may have query delays',
+        eventNotShowing: "Events aren't showing",
+        troubleshootTitle: '<strong>Troubleshooting checklist:</strong>',
+        troubleshoot1: 'Is the SDK token correct?',
+        troubleshoot2: 'Does the app name match the dashboard?',
+        troubleshoot3: 'Is the event call code being executed?',
+        troubleshoot4: 'Check network connection',
+        askClaudeCode: 'Ask Claude Code like this:',
+        askDevTeam: '<strong>Request to dev team:</strong>',
+        nextStepsBtn: 'Next Steps',
+        restartBtn: 'Start Over',
+        nextStepsTitle: '<strong>Things to do after integration:</strong>',
+        channelIntegration: '<strong>Connect Ad Channels</strong><br>Dashboard [Channel Integration]',
+        trackingLink: '<strong>Create Tracking Links</strong><br>Dashboard [Tracking Link]',
+        skanSetup: '<strong>SKAN Setup</strong><br>[Management] > [SKAN Conversion Value]',
+        deeplinkDomain: '<strong>Deep Link Domain Setup</strong><br>Dashboard [Deep Links]',
+        waitData: '<strong>Wait 1-2 days</strong><br>Check reports after collecting enough data',
+        congrats: 'Great job!',
+        congratsSubtitle: 'Airbridge integration is complete.',
+        helpCenter: '📚 Airbridge Help Center',
+        onPayment: 'On payment completion',
+        onProductView: 'On product detail view',
+        onAddToCart: 'On add to cart',
+        onAction: 'On action',
+        verifyBeforeProceed: 'Please verify before proceeding:',
+        verifyAppRegistration: 'Verify App Registration',
+        verifyAppCheck1: 'Can you see the app in dashboard?',
+        verifyAppCheck2: 'Is the app name correct?',
+        verifyAppCheck3: 'Can you access the Settings menu?',
+        verifyConfirmBtn: '✅ Verified',
+        verifyHelpBtn: '❓ Need help',
+        tokenValid: '✅ Token format is valid',
+        tokenInvalid: '⚠️ Please check token format (32 alphanumeric characters)',
+        tokenVerifyTitle: 'SDK Token Verification',
+        tokenVerifyDesc: 'Verify the token matches your dashboard',
+        tokenVerifyStep1: 'app.airbridge.io → Select app',
+        tokenVerifyStep2: 'Settings (⚙️) → Tokens tab',
+        tokenVerifyStep3: 'Verify SDK Token matches',
+        tokenMismatchWarning: 'Events will not be sent if token is incorrect'
+      }
+    };
+
+    function getText(key) {
+      return t[state.language]?.[key] || t.ko[key] || key;
+    }
+
+    function getHelpLink(path = '') {
+      const base = state.language === 'en'
+        ? 'https://help.airbridge.io/en'
+        : 'https://help.airbridge.io/ko';
+      return path ? `${base}${path}` : base;
+    }
+
+    const chatMessages = document.getElementById('chatMessages');
+
+    // ========== UTILITIES ==========
+    const delay = ms => new Promise(r => setTimeout(r, ms));
+
+    function scrollToBottom() {
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    function updateProgress(step) {
+      document.getElementById('progressFill').style.width = `${(step / 4) * 100}%`;
+      for (let i = 1; i <= 4; i++) {
+        const el = document.getElementById(`step${i}`);
+        el.classList.remove('active', 'completed');
+        if (i < step) el.classList.add('completed');
+        if (i === step) el.classList.add('active');
+      }
+    }
+
+    function showTyping() {
+      const div = document.createElement('div');
+      div.className = 'message bot-message';
+      div.id = 'typingIndicator';
+      div.innerHTML = `
+        <div class="bot-avatar">🤖</div>
+        <div class="bot-bubble">
+          <div class="typing-indicator">
+            <div class="typing-dot"></div>
+            <div class="typing-dot"></div>
+            <div class="typing-dot"></div>
+          </div>
+        </div>
+      `;
+      chatMessages.appendChild(div);
+      scrollToBottom();
+    }
+
+    function hideTyping() {
+      const el = document.getElementById('typingIndicator');
+      if (el) el.remove();
+    }
+
+    async function addBot(content, options = {}) {
+      showTyping();
+      await delay(options.delay || 600);
+      hideTyping();
+
+      const div = document.createElement('div');
+      div.className = 'message bot-message';
+      div.innerHTML = `
+        <div class="bot-avatar">🤖</div>
+        <div class="bot-bubble">${content}</div>
+      `;
+      chatMessages.appendChild(div);
+      scrollToBottom();
+    }
+
+    function addUser(text) {
+      const div = document.createElement('div');
+      div.className = 'message user-message';
+      div.innerHTML = `<div class="user-bubble">${text}</div>`;
+      chatMessages.appendChild(div);
+      scrollToBottom();
+    }
+
+    function copyToClipboard(text, btn) {
+      navigator.clipboard.writeText(text).then(() => {
+        const originalText = btn.textContent;
+        btn.textContent = getText('copied');
+        btn.classList.add('copied');
+        setTimeout(() => {
+          btn.textContent = getText('copy');
+          btn.classList.remove('copied');
+        }, 2000);
+      });
+    }
+
+    // ========== FLOW: LANGUAGE SELECTION ==========
+    async function startChat() {
+      await delay(500);
+      await addBot(`
+        <p style="text-align: center; margin-bottom: 8px;">
+          <strong>언어를 선택해주세요</strong><br>
+          <span style="color: #64748b;">Select your language</span>
+        </p>
+        <div class="options-container">
+          <button class="option-btn" onclick="selectLanguage('ko')">
+            <span class="option-icon">🇰🇷</span>한국어
+          </button>
+          <button class="option-btn" onclick="selectLanguage('en')">
+            <span class="option-icon">🇺🇸</span>English
+          </button>
+        </div>
+      `);
+    }
+
+    async function selectLanguage(lang) {
+      state.language = lang;
+      addUser(lang === 'ko' ? '한국어' : 'English');
+      document.querySelector('.chat-header-text h1').textContent = getText('headerTitle');
+      document.querySelector('.chat-header-text p').textContent = getText('headerSubtitle');
+      document.getElementById('step1').textContent = getText('step1');
+      document.getElementById('step2').textContent = getText('step2');
+      document.getElementById('step3').textContent = getText('step3');
+      document.getElementById('step4').textContent = getText('step4');
+      await showWelcome();
+    }
+
+    // ========== FLOW: PHASE 1 - CORE SETUP ==========
+    async function showWelcome() {
+      await addBot(`
+        <p>${getText('welcome1')}</p>
+        <p>${getText('welcome2')}</p>
+        <p>${getText('welcome3')}</p>
+      `);
+
+      await addBot(`
+        <p>${getText('askAppRegistered')}</p>
+        <div class="options-container">
+          <button class="option-btn" onclick="checkAppRegistered(true)">
+            <span class="option-icon">✅</span>${getText('yesRegistered')}
+          </button>
+          <button class="option-btn" onclick="checkAppRegistered(false)">
+            <span class="option-icon">❌</span>${getText('notYet')}
+          </button>
+        </div>
+      `, { delay: 800 });
+
+      updateProgress(1);
+    }
+
+    async function checkAppRegistered(registered) {
+      if (registered) {
+        state.appRegistered = true;
+        addUser(getText('yesRegistered'));
+        await showAppRegistrationVerification();
+      } else {
+        addUser(getText('notYet'));
+        await addBot(`
+          <p>${getText('registerFirst')}</p>
+          <div class="step-box">
+            <h4>${getText('registerStepTitle')}</h4>
+            <ol>
+              <li><a href="https://app.airbridge.io" target="_blank">app.airbridge.io</a> ${getText('registerStep1')}</li>
+              <li>${getText('registerStep2')}</li>
+              <li>${getText('registerStep3')}</li>
+            </ol>
+          </div>
+          <div class="error-box">
+            ${getText('unchangeableWarning')}<br>
+            ${getText('unchangeableItems')}
+          </div>
+          <div class="info-box">
+            ${getText('testAppTip')}
+          </div>
+          <div style="margin-top: 16px;">
+            <button class="submit-btn" onclick="checkAppRegistered(true)">${getText('registrationDone')}</button>
+          </div>
+        `);
+      }
+    }
+
+    async function showAppRegistrationVerification() {
+      await addBot(`
+        <p><strong>${getText('verifyAppRegistration')}</strong></p>
+        <p>${getText('verifyBeforeProceed')}</p>
+        <div class="checklist" id="appVerifyChecklist">
+          <label class="checklist-item" style="cursor: pointer;">
+            <input type="checkbox" class="verify-check" onchange="updateVerifyButton('appVerify')">
+            <span class="icon">☐</span>
+            <span>${getText('verifyAppCheck1')}</span>
+          </label>
+          <label class="checklist-item" style="cursor: pointer;">
+            <input type="checkbox" class="verify-check" onchange="updateVerifyButton('appVerify')">
+            <span class="icon">☐</span>
+            <span>${getText('verifyAppCheck2')}</span>
+          </label>
+          <label class="checklist-item" style="cursor: pointer;">
+            <input type="checkbox" class="verify-check" onchange="updateVerifyButton('appVerify')">
+            <span class="icon">☐</span>
+            <span>${getText('verifyAppCheck3')}</span>
+          </label>
+        </div>
+        <div class="btn-row" style="margin-top: 12px;">
+          <a href="https://app.airbridge.io" target="_blank" class="submit-btn secondary" style="text-decoration: none; text-align: center;">${getText('verifyHelpBtn')}</a>
+          <button class="submit-btn" id="appVerifyBtn" onclick="confirmAppRegistration()" disabled>${getText('verifyConfirmBtn')}</button>
+        </div>
+      `);
+    }
+
+    function updateVerifyButton(type) {
+      const container = document.getElementById(type + 'Checklist');
+      const checkboxes = container.querySelectorAll('.verify-check');
+      const allChecked = Array.from(checkboxes).every(cb => cb.checked);
+      const btn = document.getElementById(type + 'Btn');
+      if (btn) btn.disabled = !allChecked;
+      checkboxes.forEach(cb => {
+        const icon = cb.parentElement.querySelector('.icon');
+        icon.textContent = cb.checked ? '✅' : '☐';
+      });
+    }
+
+    async function confirmAppRegistration() {
+      addUser(getText('verifyConfirmBtn'));
+      const msg = state.language === 'en' ? 'App registration verified!' : '앱 등록이 확인되었습니다!';
+      await addBot(`<div class="success-box">✅ ${msg}</div>`);
+      await askAppMode();
+    }
+
+    async function askAppMode() {
+      await addBot(`
+        <p>${getText('askAppMode')}</p>
+        <div class="warning-box">${getText('appModeWarning')}</div>
+        <div class="options-container" style="margin-top: 12px;">
+          <button class="option-btn" onclick="selectAppMode('production')">
+            <span class="option-icon">🚀</span>
+            <div>
+              <strong>${getText('productionMode')}</strong>
+              <p style="font-size: 12px; color: #64748b; margin-top: 4px;">${getText('productionModeDesc')}</p>
+            </div>
+          </button>
+          <button class="option-btn" onclick="selectAppMode('development')">
+            <span class="option-icon">🔧</span>
+            <div>
+              <strong>${getText('developmentMode')}</strong>
+              <p style="font-size: 12px; color: #64748b; margin-top: 4px;">${getText('developmentModeDesc')}</p>
+            </div>
+          </button>
+        </div>
+      `);
+    }
+
+    async function selectAppMode(mode) {
+      state.appMode = mode;
+      addUser(mode === 'production' ? getText('selectedProduction') : getText('selectedDevelopment'));
+      await addBot(`<p>${mode === 'production' ? getText('productionTip') : getText('developmentTip')}</p>`);
+      await askImplementationMethod();
+    }
+
+    async function askImplementationMethod() {
+      await addBot(`
+        <p>${getText('askImplementation')}</p>
+        <div class="options-container">
+          <button class="option-btn" onclick="selectImplementationMethod('ai')">
+            <span class="option-icon">🤖</span>
+            <div>
+              <strong>${getText('implAI')}</strong>
+              <p style="font-size: 12px; color: #64748b; margin-top: 4px;">${getText('implAIDesc')}</p>
+            </div>
+          </button>
+          <button class="option-btn" onclick="selectImplementationMethod('devteam')">
+            <span class="option-icon">👥</span>
+            <div>
+              <strong>${getText('implDevTeam')}</strong>
+              <p style="font-size: 12px; color: #64748b; margin-top: 4px;">${getText('implDevTeamDesc')}</p>
+            </div>
+          </button>
+        </div>
+      `);
+    }
+
+    async function selectImplementationMethod(method) {
+      state.implementationMethod = method;
+      addUser(method === 'ai' ? getText('implAISelected') : getText('implDevTeamSelected'));
+      await addBot(`<p>${method === 'ai' ? getText('implAIResponse') : getText('implDevTeamResponse')}</p>`);
+      await askPlatform();
+    }
+
+    async function askPlatform() {
+      await addBot(`
+        <p>${getText('askPlatform')}</p>
+        <div class="options-container">
+          <button class="option-btn" onclick="selectPlatform('Flutter')">
+            <span class="option-icon">💙</span>Flutter
+          </button>
+          <button class="option-btn" onclick="selectPlatform('React Native')">
+            <span class="option-icon">⚛️</span>React Native
+          </button>
+          <button class="option-btn" onclick="selectPlatform('iOS')">
+            <span class="option-icon">🍎</span>iOS (Swift)
+          </button>
+          <button class="option-btn" onclick="selectPlatform('Android')">
+            <span class="option-icon">🤖</span>Android (Kotlin)
+          </button>
+        </div>
+      `);
+    }
+
+    async function selectPlatform(platform) {
+      state.platform = platform;
+      addUser(platform);
+      if (platform === 'Flutter' || platform === 'React Native') {
+        await askIOSSupport();
+      } else if (platform === 'iOS') {
+        state.hasIOS = true;
+        await askSDKToken();
+      } else {
+        state.hasIOS = false;
+        await askSDKToken();
+      }
+    }
+
+    async function askIOSSupport() {
+      await addBot(`
+        <p>${getText('askiOSSupport')}</p>
+        <div class="info-box">${getText('iOSTip')}</div>
+        <div class="options-row" style="margin-top: 12px;">
+          <button class="option-btn" onclick="setIOSSupport(true)">
+            <span class="option-icon">🍎</span>${getText('yesiOS')}
+          </button>
+          <button class="option-btn" onclick="setIOSSupport(false)">
+            <span class="option-icon">🤖</span>${getText('androidOnly')}
+          </button>
+        </div>
+      `);
+    }
+
+    async function setIOSSupport(hasIOS) {
+      state.hasIOS = hasIOS;
+      addUser(hasIOS ? getText('yesiOS') : getText('androidOnly'));
+      await askSDKToken();
+    }
+
+    async function askSDKToken() {
+      await addBot(`
+        <p>${getText('askSDKToken')}</p>
+        <div class="step-box">
+          <h4>${getText('tokenLocationTitle')}</h4>
+          <ol>
+            <li><a href="https://app.airbridge.io" target="_blank">app.airbridge.io</a> ${getText('tokenStep1')}</li>
+            <li>${getText('tokenStep2')}</li>
+            <li>${getText('tokenStep3')}</li>
+          </ol>
+        </div>
+        <div class="input-container">
+          <input type="text" class="input-field" id="appNameInput" placeholder="${getText('appNamePlaceholder')}">
+          <input type="text" class="input-field" id="sdkTokenInput" placeholder="${getText('sdkTokenPlaceholder')}">
+          <button class="submit-btn" onclick="submitSDKToken()">${getText('next')}</button>
+        </div>
+      `);
+    }
+
+    async function submitSDKToken() {
+      const appName = document.getElementById('appNameInput').value.trim();
+      const token = document.getElementById('sdkTokenInput').value.trim();
+      if (!appName || !token) {
+        alert(state.language === 'ko' ? 'App Name과 SDK Token을 모두 입력해주세요.' : 'Please enter both App Name and SDK Token.');
+        return;
+      }
+      const tokenRegex = /^[a-f0-9]{32}$/i;
+      const isValidFormat = tokenRegex.test(token);
+      state.appName = appName;
+      state.sdkToken = token;
+      addUser(`${appName} / ${token.slice(0, 8)}...`);
+      await showTokenVerification(isValidFormat);
+    }
+
+    async function showTokenVerification(isValidFormat) {
+      const validMsg = isValidFormat ? getText('tokenValid') : getText('tokenInvalid');
+      const validClass = isValidFormat ? 'success-box' : 'warning-box';
+      await addBot(`
+        <div class="${validClass}">${validMsg}</div>
+        <div class="step-box" style="margin-top: 12px;">
+          <h4>🔍 ${getText('tokenVerifyTitle')}</h4>
+          <p style="font-size: 13px; color: #64748b; margin-bottom: 8px;">${getText('tokenVerifyDesc')}</p>
+          <div class="checklist" id="tokenVerifyChecklist">
+            <label class="checklist-item" style="cursor: pointer;">
+              <input type="checkbox" class="verify-check" onchange="updateVerifyButton('tokenVerify')">
+              <span class="icon">☐</span>
+              <span>${getText('tokenVerifyStep1')}</span>
+            </label>
+            <label class="checklist-item" style="cursor: pointer;">
+              <input type="checkbox" class="verify-check" onchange="updateVerifyButton('tokenVerify')">
+              <span class="icon">☐</span>
+              <span>${getText('tokenVerifyStep2')}</span>
+            </label>
+            <label class="checklist-item" style="cursor: pointer;">
+              <input type="checkbox" class="verify-check" onchange="updateVerifyButton('tokenVerify')">
+              <span class="icon">☐</span>
+              <span>${getText('tokenVerifyStep3')}</span>
+            </label>
+          </div>
+          <div class="warning-box" style="margin-top: 8px; font-size: 12px;">
+            ⚠️ ${getText('tokenMismatchWarning')}
+          </div>
+        </div>
+        <div class="btn-row" style="margin-top: 12px;">
+          <a href="https://app.airbridge.io" target="_blank" class="submit-btn secondary" style="text-decoration: none; text-align: center;">${getText('verifyHelpBtn')}</a>
+          <button class="submit-btn" id="tokenVerifyBtn" onclick="confirmTokenVerification()" disabled>${getText('verifyConfirmBtn')}</button>
+        </div>
+      `);
+    }
+
+    async function confirmTokenVerification() {
+      addUser(getText('verifyConfirmBtn'));
+      await addBot(`<div class="success-box">${getText('basicInfoDone')}</div>`);
+      updateProgress(2);
+      await askBasicEvents();
+    }
+
+    // ========== FLOW: PHASE 2 - EVENTS ==========
+    async function askBasicEvents() {
+      await addBot(`
+        <p>${getText('askEvents')}</p>
+        <p>${getText('basicEventsIncluded')}</p>
+        <div class="checklist">
+          <div class="checklist-item done">
+            <span class="icon">✅</span>
+            <span>${getText('signUp')} (sign_up)</span>
+          </div>
+          <div class="checklist-item done">
+            <span class="icon">✅</span>
+            <span>${getText('signIn')} (sign_in)</span>
+          </div>
+        </div>
+      `);
+      state.events = [
+        { name: getText('signUp'), category: 'sign_up' },
+        { name: getText('signIn'), category: 'sign_in' }
+      ];
+      await askRevenueEvents();
+    }
+
+    async function askRevenueEvents() {
+      await addBot(`
+        <p>${getText('askRevenue')}</p>
+        <div class="info-box">${getText('revenueTip')}</div>
+        <div class="options-row" style="margin-top: 12px;">
+          <button class="option-btn" onclick="setRevenueEvents(true)">
+            <span class="option-icon">💰</span>${getText('yesNeed')}
+          </button>
+          <button class="option-btn" onclick="setRevenueEvents(false)">
+            <span class="option-icon">⏭️</span>${getText('skip')}
+          </button>
+        </div>
+      `);
+    }
+
+    async function setRevenueEvents(needed) {
+      state.needsRevenue = needed;
+      addUser(needed ? getText('revenueNeeded') : getText('skipped'));
+      if (needed) {
+        state.events.push(
+          { name: getText('productViewed'), category: 'product_viewed' },
+          { name: getText('addToCart'), category: 'add_to_cart' },
+          { name: getText('orderCompleted'), category: 'order_completed' }
+        );
+        await addBot(`
+          <p>${getText('revenueAdded')}</p>
+          <div class="checklist">
+            <div class="checklist-item done"><span class="icon">✅</span><span>${getText('productViewed')} (product_viewed)</span></div>
+            <div class="checklist-item done"><span class="icon">✅</span><span>${getText('addToCart')} (add_to_cart)</span></div>
+            <div class="checklist-item done"><span class="icon">✅</span><span>${getText('orderCompleted')} (order_completed)</span></div>
+          </div>
+        `);
+      }
+      await askAdditionalEvents();
+    }
+
+    async function askAdditionalEvents() {
+      await addBot(`
+        <p>${getText('askAdditionalEvents')}</p>
+        <div class="options-row" style="margin-top: 12px;">
+          <button class="option-btn" onclick="addCustomEvents()">
+            <span class="option-icon">➕</span>${getText('addCustom')}
+          </button>
+          <button class="option-btn" onclick="skipAdditionalEvents()">
+            <span class="option-icon">✅</span>${getText('enough')}
+          </button>
+        </div>
+      `);
+    }
+
+    async function addCustomEvents() {
+      addUser(getText('addCustom'));
+      await addBot(`
+        <p>${getText('customEventTitle')}</p>
+        <p style="font-size: 13px; color: #64748b;">${getText('customEventDesc')}</p>
+        <div class="input-container">
+          <textarea class="input-field" id="customEventsInput" placeholder="${getText('customEventPlaceholder')}"></textarea>
+          <div class="btn-row">
+            <button class="submit-btn secondary" onclick="skipAdditionalEvents()">${getText('skip')}</button>
+            <button class="submit-btn" onclick="submitCustomEvents()">${getText('addEvents')}</button>
+          </div>
+        </div>
+      `);
+    }
+
+    async function submitCustomEvents() {
+      const input = document.getElementById('customEventsInput').value.trim();
+      if (input) {
+        const lines = input.split('\n').filter(l => l.trim());
+        const newEvents = lines.map(line => {
+          const [name, category] = line.split(',').map(s => s.trim());
+          return { name, category: category || name.toLowerCase().replace(/\s+/g, '_') };
+        });
+        state.events.push(...newEvents);
+        addUser(state.language === 'en' ? `${newEvents.length} events added` : `${newEvents.length}개 이벤트 추가`);
+      }
+      await goToPhase3();
+    }
+
+    async function skipAdditionalEvents() {
+      addUser(getText('enough'));
+      await goToPhase3();
+    }
+
+    // ========== FLOW: PHASE 3 - CONDITIONAL FEATURES ==========
+    async function goToPhase3() {
+      updateProgress(3);
+      const msg = state.language === 'en'
+        ? "Events configured! 🎉 Now let's check if you need <strong>additional features</strong>."
+        : "이벤트 설정 완료! 🎉 이제 <strong>추가 기능이 필요한지</strong> 확인할게요.";
+      await addBot(`<p>${msg}</p>`);
+      await askAdsQuestion();
+    }
+
+    async function askAdsQuestion() {
+      const askAds = state.language === 'en'
+        ? 'Are you acquiring users through <strong>ad campaigns</strong>?'
+        : '<strong>광고 캠페인</strong>으로 유저를 유입시키고 있나요?';
+      await addBot(`
+        <p>${askAds}</p>
+        <div class="options-row" style="margin-top: 12px;">
+          <button class="option-btn" onclick="setAdsUsage(true)">
+            <span class="option-icon">📢</span>${getText('yesAds')}
+          </button>
+          <button class="option-btn" onclick="setAdsUsage(false)">
+            <span class="option-icon">🚫</span>${getText('noAds')}
+          </button>
+        </div>
+      `);
+    }
+
+    async function setAdsUsage(hasAds) {
+      state.hasAds = hasAds;
+      addUser(hasAds ? getText('adsYes') : getText('adsNo'));
+      if (hasAds) {
+        const cardTitle = state.language === 'en' ? 'Attribution Setup Required' : '어트리뷰션 설정 필요';
+        const cardDesc = state.language === 'en'
+          ? 'Dashboard configuration is required to measure ad performance.'
+          : '광고 성과를 측정하려면 대시보드에서 설정이 필요해요.';
+        await addBot(`
+          <div class="feature-card">
+            <div class="feature-card-header">
+              <span class="icon">📊</span>
+              <h5>${cardTitle}</h5>
+            </div>
+            <p>${cardDesc}</p>
+          </div>
+        `);
+      }
+      await askDeeplinkQuestion();
+    }
+
+    async function askDeeplinkQuestion() {
+      const askDeeplink = state.language === 'en'
+        ? 'Do you need <strong>deep linking</strong>?'
+        : '<strong>딥링크</strong>가 필요하세요?';
+      const later = state.language === 'en' ? "I'll do it later" : '나중에 할게요';
+      await addBot(`
+        <p>${askDeeplink}</p>
+        <div class="options-row" style="margin-top: 12px;">
+          <button class="option-btn" onclick="setDeeplinkUsage(true)">
+            <span class="option-icon">🔗</span>${getText('yesDeeplink')}
+          </button>
+          <button class="option-btn" onclick="setDeeplinkUsage(false)">
+            <span class="option-icon">⏭️</span>${later}
+          </button>
+        </div>
+      `);
+    }
+
+    async function setDeeplinkUsage(needed) {
+      state.needsDeeplink = needed;
+      addUser(needed ? getText('deeplinkNeeded') : (state.language === 'en' ? "I'll do it later" : '나중에 할게요'));
+      if (needed) {
+        const cardTitle = state.language === 'en' ? 'Deep Link Setup Included' : '딥링크 설정 포함';
+        await addBot(`
+          <div class="feature-card">
+            <div class="feature-card-header">
+              <span class="icon">🔗</span>
+              <h5>${cardTitle}</h5>
+            </div>
+            <p>${getText('deeplinkAdded')}</p>
+          </div>
+        `);
+      }
+      await askUserIdentityQuestion();
+    }
+
+    async function askUserIdentityQuestion() {
+      const later = state.language === 'en' ? "I'll do it later" : '나중에 할게요';
+      await addBot(`
+        <p>${getText('askUserIdentity')}</p>
+        <div class="info-box">${getText('userIdentityTip')}</div>
+        <div class="options-row" style="margin-top: 12px;">
+          <button class="option-btn" onclick="setUserIdentityUsage(true)">
+            <span class="option-icon">👤</span>${getText('yesUserIdentity')}
+          </button>
+          <button class="option-btn" onclick="setUserIdentityUsage(false)">
+            <span class="option-icon">⏭️</span>${later}
+          </button>
+        </div>
+      `);
+    }
+
+    async function setUserIdentityUsage(needed) {
+      state.needsUserIdentity = needed;
+      addUser(needed ? getText('userIdentityNeeded') : (state.language === 'en' ? "I'll do it later" : '나중에 할게요'));
+      if (needed) {
+        const cardTitle = state.language === 'en' ? 'User Identity Setup Included' : '유저 식별자 설정 포함';
+        await addBot(`
+          <div class="feature-card">
+            <div class="feature-card-header">
+              <span class="icon">👤</span>
+              <h5>${cardTitle}</h5>
+            </div>
+            <p>${getText('userIdentityAdded')}</p>
+          </div>
+        `);
+      }
+      if (state.hasIOS) {
+        await askIOSSpecificQuestions();
+      } else {
+        await generateFinalTemplate();
+      }
+    }
+
+    async function askIOSSpecificQuestions() {
+      const intro = state.language === 'en'
+        ? 'Since this is an iOS app, <strong>additional settings</strong> are required.'
+        : 'iOS 앱이라 <strong>추가 설정</strong>이 필요해요.';
+      const confirmBtn = state.language === 'en' ? 'Got it, include these' : '이해했어요, 포함해주세요';
+      await addBot(`
+        <p>${intro}</p>
+        <div class="feature-card">
+          <div class="feature-card-header">
+            <span class="icon">🍎</span>
+            <h5>${state.language === 'en' ? 'iOS Required Settings' : 'iOS 필수 설정'}</h5>
+          </div>
+          <p>${state.language === 'en' ? 'Required due to iOS 14+ privacy policies.' : 'iOS 14 이후 개인정보 보호 정책으로 인해 필수입니다.'}</p>
+        </div>
+        <div style="margin-top: 12px;">
+          <button class="submit-btn" onclick="confirmIOSSettings()">${confirmBtn}</button>
+        </div>
+      `);
+    }
+
+    async function confirmIOSSettings() {
+      addUser(state.language === 'en' ? 'Include iOS settings' : 'iOS 설정 포함해주세요');
+      await addBot(`<div class="success-box">${state.language === 'en' ? '✅ ATT prompt setup will be included.' : '✅ ATT 프롬프트 설정을 포함할게요.'}</div>`);
+      await generateFinalTemplate();
+    }
+
+    // ========== FLOW: PHASE 4 - GENERATE TEMPLATE ==========
+    async function generateFinalTemplate() {
+      updateProgress(4);
+      await addBot(`<p>${state.language === 'en' ? 'Configuration complete! 🎉' : '설정 확인 완료! 🎉'}</p>`);
+
+      const evtCount = state.language === 'en' ? `${state.events.length}` : `${state.events.length}개`;
+      const yesNo = (val) => val ? `✅ ${getText('yes')}` : `❌ ${getText('no')}`;
+      let summaryHTML = `<table class="summary-table">
+        <tr><th>${getText('summaryItem')}</th><th>${getText('summarySetting')}</th></tr>
+        <tr><td>${getText('summaryPlatform')}</td><td>${state.platform}</td></tr>
+        <tr><td>${getText('summaryiOS')}</td><td>${yesNo(state.hasIOS)}</td></tr>
+        <tr><td>${getText('summaryEvents')}</td><td>${evtCount}</td></tr>
+        <tr><td>${getText('summaryRevenue')}</td><td>${state.needsRevenue ? '✅' : '❌'}</td></tr>
+        <tr><td>${getText('summaryDeeplink')}</td><td>${state.needsDeeplink ? '✅' : '❌'}</td></tr>
+        <tr><td>${getText('summaryUserIdentity')}</td><td>${state.needsUserIdentity ? '✅' : '❌'}</td></tr>
+        ${state.hasIOS ? `<tr><td>${getText('summaryATT')}</td><td>✅</td></tr>` : ''}
+      </table>`;
+      await addBot(summaryHTML);
+
+      const template = state.implementationMethod === 'ai' ? generateAITemplate() : generateDevTeamSpec();
+      const outputLabel = state.implementationMethod === 'ai' ? getText('pasteToClaudeCode') : getText('sendToDevTeam');
+      await addBot(`
+        <p>${outputLabel}</p>
+        <div class="code-block" id="finalTemplate">
+          <button class="copy-btn" onclick="copyToClipboard(document.getElementById('finalTemplate').innerText.replace('${getText('copy')}', '').replace('${getText('copied')}', '').trim(), this)">${getText('copy')}</button>
+${template}
+        </div>
+      `, { delay: 800 });
+
+      await showVerificationGuide();
+    }
+
+    function generateAITemplate() {
+      const isEn = state.language === 'en';
+      const eventsSchema = state.events.map(e => {
+        const eventObj = { name: e.name, category: e.category, trigger: '', attributes: {} };
+        if (e.category === 'order_completed') {
+          eventObj.trigger = 'on_payment_complete';
+          eventObj.attributes = {
+            orderId: { type: 'string', required: true },
+            totalValue: { type: 'number', required: true },
+            currency: { type: 'string', required: true, example: 'KRW' }
+          };
+        } else if (e.category === 'product_viewed') {
+          eventObj.trigger = 'on_product_view';
+          eventObj.attributes = { productId: { type: 'string', required: true } };
+        } else if (e.category === 'add_to_cart') {
+          eventObj.trigger = 'on_add_to_cart';
+          eventObj.attributes = { productId: { type: 'string', required: true }, quantity: { type: 'number', default: 1 } };
+        } else {
+          eventObj.trigger = 'on_action';
+        }
+        return eventObj;
+      });
+
+      const config = {
+        sdk: 'airbridge',
+        app_config: { platform: state.platform, app_name: state.appName, sdk_token: state.sdkToken },
+        features: { ios_support: state.hasIOS, deep_link: state.needsDeeplink, user_identity: state.needsUserIdentity, revenue_tracking: state.needsRevenue },
+        events: eventsSchema,
+        documentation: { sdk_guide: getHelpLink('/guides/getting-started-with-airbridge') }
+      };
+
+      const intro = isEn ? 'Implement Airbridge SDK integration based on this config:' : '아래 설정을 기반으로 Airbridge SDK를 연동해줘:';
+      return `${intro}\n\n${JSON.stringify(config, null, 2)}`;
+    }
+
+    function generateDevTeamSpec() {
+      const isEn = state.language === 'en';
+      const today = new Date().toLocaleDateString(isEn ? 'en-US' : 'ko-KR');
+      let spec = isEn
+        ? `📋 AIRBRIDGE SDK INTEGRATION SPEC\nDate: ${today}\n\n📱 APP INFO\n• Platform: ${state.platform}\n• App Name: ${state.appName}\n• SDK Token: ${state.sdkToken}\n• iOS Support: ${state.hasIOS ? 'Yes' : 'No'}`
+        : `📋 AIRBRIDGE SDK 연동 명세서\n작성일: ${today}\n\n📱 앱 정보\n• 플랫폼: ${state.platform}\n• 앱 이름: ${state.appName}\n• SDK 토큰: ${state.sdkToken}\n• iOS 지원: ${state.hasIOS ? '예' : '아니오'}`;
+
+      spec += isEn ? `\n\n📌 EVENTS TO TRACK (${state.events.length})` : `\n\n📌 트래킹할 이벤트 (${state.events.length}개)`;
+      state.events.forEach((e, i) => { spec += `\n${i + 1}. ${e.name} (${e.category})`; });
+
+      spec += isEn ? `\n\n📚 REFERENCE\n• ${getHelpLink('/guides/getting-started-with-airbridge')}` : `\n\n📚 참고 문서\n• ${getHelpLink('/guides/getting-started-with-airbridge')}`;
+      return spec;
+    }
+
+    async function showVerificationGuide() {
+      const isEn = state.language === 'en';
+      await addBot(`
+        <p>${getText('verificationTitle')}</p>
+        <div class="step-box">
+          <h4>${getText('realtimeLogTitle')}</h4>
+          <ol>
+            <li>${getText('verifyStep1')}</li>
+            <li><a href="https://app.airbridge.io" target="_blank">app.airbridge.io</a> ${getText('verifyStep2')}</li>
+            <li>${getText('verifyStep3')}</li>
+            <li>${getText('verifyStep4')}</li>
+          </ol>
+        </div>
+        <div class="mock-ui">
+          <div class="mock-ui-header">
+            <div class="mock-ui-dot red"></div>
+            <div class="mock-ui-dot yellow"></div>
+            <div class="mock-ui-dot green"></div>
+          </div>
+          <div class="mock-ui-content">
+            <div class="mock-ui-row"><span class="time">10:23:45</span> | <span class="event">Open</span> | Device: iPhone</div>
+            <div class="mock-ui-row highlight"><span class="time">10:23:47</span> | <span class="event">Event</span> | <span class="category">sign_in</span></div>
+          </div>
+        </div>
+        <div class="success-box">${getText('verifySuccess')}</div>
+      `, { delay: 600 });
+
+      let checklistItems = `
+        <label class="checklist-item" style="cursor: pointer;">
+          <input type="checkbox" class="verify-check" onchange="updateFinalVerifyButton()">
+          <span class="icon">☐</span>
+          <span>${isEn ? 'Open event received on app launch' : '앱 실행 시 Open 이벤트 수신됨'}</span>
+        </label>
+        <label class="checklist-item" style="cursor: pointer;">
+          <input type="checkbox" class="verify-check" onchange="updateFinalVerifyButton()">
+          <span class="icon">☐</span>
+          <span>${isEn ? 'sign_in event received on login' : '로그인 시 sign_in 이벤트 수신됨'}</span>
+        </label>`;
+      if (state.needsRevenue) {
+        checklistItems += `<label class="checklist-item" style="cursor: pointer;"><input type="checkbox" class="verify-check" onchange="updateFinalVerifyButton()"><span class="icon">☐</span><span>${isEn ? 'order_completed event received' : 'order_completed 이벤트 수신됨'}</span></label>`;
+      }
+
+      await addBot(`
+        <div class="step-box" style="margin-top: 16px;">
+          <h4>${isEn ? '✅ Final Integration Checklist' : '✅ 최종 연동 체크리스트'}</h4>
+          <div class="checklist" id="finalVerifyChecklist">${checklistItems}</div>
+        </div>
+        <div class="btn-row" style="margin-top: 12px;">
+          <button class="submit-btn secondary" onclick="showTroubleshooting()">🔧 ${getText('eventNotShowing')}</button>
+          <button class="submit-btn" id="finalVerifyBtn" onclick="confirmFinalVerification()" disabled>${isEn ? '🎉 Integration Complete!' : '🎉 연동 완료!'}</button>
+        </div>
+      `, { delay: 400 });
+    }
+
+    function updateFinalVerifyButton() {
+      const container = document.getElementById('finalVerifyChecklist');
+      const checkboxes = container.querySelectorAll('.verify-check');
+      const allChecked = Array.from(checkboxes).every(cb => cb.checked);
+      document.getElementById('finalVerifyBtn').disabled = !allChecked;
+      checkboxes.forEach(cb => {
+        const icon = cb.parentElement.querySelector('.icon');
+        icon.textContent = cb.checked ? '✅' : '☐';
+      });
+    }
+
+    async function confirmFinalVerification() {
+      addUser(state.language === 'en' ? 'Integration Complete!' : '연동 완료!');
+      await showNextSteps();
+    }
+
+    async function showTroubleshooting() {
+      addUser(getText('eventNotShowing'));
+      await addBot(`
+        <p>${getText('troubleshootTitle')}</p>
+        <div class="checklist">
+          <div class="checklist-item"><span class="icon">1️⃣</span><span>${getText('troubleshoot1')}</span></div>
+          <div class="checklist-item"><span class="icon">2️⃣</span><span>${getText('troubleshoot2')}</span></div>
+          <div class="checklist-item"><span class="icon">3️⃣</span><span>${getText('troubleshoot3')}</span></div>
+          <div class="checklist-item"><span class="icon">4️⃣</span><span>${getText('troubleshoot4')}</span></div>
+        </div>
+      `);
+    }
+
+    async function showNextSteps() {
+      let nextStepsHTML = `<p>${getText('nextStepsTitle')}</p><div class="checklist">`;
+      if (state.hasAds) {
+        nextStepsHTML += `<div class="checklist-item pending"><span class="icon">📢</span><span>${getText('channelIntegration')}</span></div>`;
+      }
+      if (state.hasIOS) {
+        nextStepsHTML += `<div class="checklist-item pending"><span class="icon">📊</span><span>${getText('skanSetup')}</span></div>`;
+      }
+      nextStepsHTML += `<div class="checklist-item pending"><span class="icon">⏳</span><span>${getText('waitData')}</span></div></div>`;
+      await addBot(nextStepsHTML);
+
+      await addBot(`
+        <div class="success-animation">
+          <div class="success-icon">🎉</div>
+          <h2 style="color: #4F46E5; margin-bottom: 8px;">${getText('congrats')}</h2>
+          <p style="color: #64748b;">${getText('congratsSubtitle')}</p>
+        </div>
+        <div style="margin-top: 16px;">
+          <a href="${getHelpLink()}" target="_blank" class="submit-btn" style="display: block; text-align: center; text-decoration: none;">${getText('helpCenter')}</a>
+        </div>
+      `);
+    }
+
+    // ========== INIT ==========
+    startChat();
+  </script>
+</body>
+</html>
