@@ -2047,9 +2047,11 @@
     // ========== FLOW: PHASE 4 - GENERATE TEMPLATE ==========
     async function generateFinalTemplate() {
       updateProgress(4);
-      await addBot(`<div class="success-box">${state.language === 'en' ? 'Configuration complete! 🎉' : '설정 확인 완료! 🎉'}</div>`);
+      const isEn = state.language === 'en';
 
-      const evtCount = state.language === 'en' ? `${state.events.length}` : `${state.events.length}개`;
+      await addBot(`<div class="success-box">${isEn ? 'Configuration complete! 🎉' : '설정 확인 완료! 🎉'}</div>`);
+
+      const evtCount = isEn ? `${state.events.length}` : `${state.events.length}개`;
       const yesNo = (val) => val ? `✅ ${getText('yes')}` : `❌ ${getText('no')}`;
       let summaryHTML = `<table class="summary-table">
         <tr><th>${getText('summaryItem')}</th><th>${getText('summarySetting')}</th></tr>
@@ -2063,17 +2065,272 @@
       </table>`;
       await addBot(summaryHTML);
 
+      // Step 1: Show template
+      await showStep1Template();
+    }
+
+    // ========== POST-TEMPLATE STEP-BY-STEP FLOW ==========
+    async function showStep1Template() {
+      const isEn = state.language === 'en';
       const template = state.implementationMethod === 'ai' ? generateAITemplate() : generateDevTeamSpec();
-      const outputLabel = state.implementationMethod === 'ai' ? getText('pasteToClaudeCode') : getText('sendToDevTeam');
+      const stepTitle = isEn ? 'STEP 1: Copy the Template' : 'STEP 1: 템플릿 복사하기';
+      const stepDesc = state.implementationMethod === 'ai'
+        ? (isEn ? 'Copy this template and paste it into your AI assistant (Claude, ChatGPT, etc.)' : '이 템플릿을 복사해서 AI 어시스턴트(Claude, ChatGPT 등)에 붙여넣으세요')
+        : (isEn ? 'Copy this specification and send it to your development team' : '이 명세서를 복사해서 개발팀에 전달하세요');
+      const nextBtnText = isEn ? 'Done copying → Next step' : '복사 완료 → 다음 단계';
+
       await addBot(`
-        <p>${outputLabel}</p>
-        <div class="code-block" id="finalTemplate">
-          <button class="copy-btn" onclick="copyToClipboard(document.getElementById('finalTemplate').innerText.replace('${getText('copy')}', '').replace('${getText('copied')}', '').trim(), this)">${getText('copy')}</button>
+        <div class="step-box" style="border: 2px solid #4F46E5;">
+          <h4 style="color: #4F46E5;">📋 ${stepTitle}</h4>
+          <p style="font-size: 13px; color: #64748b; margin-bottom: 12px;">${stepDesc}</p>
+          <div class="code-block" id="finalTemplate">
+            <button class="copy-btn" onclick="copyToClipboard(document.getElementById('finalTemplate').innerText.replace('${getText('copy')}', '').replace('${getText('copied')}', '').trim(), this)">${getText('copy')}</button>
 ${template}
+          </div>
+        </div>
+        <div style="margin-top: 12px;">
+          <button class="submit-btn" onclick="showStep2Implementation()">✅ ${nextBtnText}</button>
         </div>
       `, { delay: 800 });
+    }
 
-      await showDashboardVerification();
+    async function showStep2Implementation() {
+      const isEn = state.language === 'en';
+      addUser(isEn ? 'Template copied' : '템플릿 복사 완료');
+
+      const stepTitle = isEn ? 'STEP 2: Implement SDK' : 'STEP 2: SDK 연동하기';
+      const stepDesc = state.implementationMethod === 'ai'
+        ? (isEn ? 'Let your AI assistant implement the SDK based on the template.' : 'AI 어시스턴트가 템플릿을 기반으로 SDK를 연동하도록 하세요.')
+        : (isEn ? 'Wait for your development team to complete the SDK integration.' : '개발팀이 SDK 연동을 완료할 때까지 기다리세요.');
+
+      const todoList = isEn ? [
+        'SDK package installed',
+        'SDK initialized with app name and token',
+        'Basic events (sign_up, sign_in) implemented',
+        state.needsRevenue ? 'Revenue events implemented' : null,
+        state.hasIOS ? 'iOS settings (ATT) configured' : null
+      ].filter(Boolean) : [
+        'SDK 패키지 설치 완료',
+        'SDK 초기화 (앱 이름, 토큰 설정)',
+        '기본 이벤트 (sign_up, sign_in) 구현',
+        state.needsRevenue ? '매출 이벤트 구현' : null,
+        state.hasIOS ? 'iOS 설정 (ATT) 완료' : null
+      ].filter(Boolean);
+
+      const waitingText = isEn ? 'Click below when SDK implementation is complete:' : 'SDK 연동이 완료되면 아래 버튼을 클릭하세요:';
+      const nextBtnText = isEn ? 'SDK implementation done → Next step' : 'SDK 연동 완료 → 다음 단계';
+
+      await addBot(`
+        <div class="step-box" style="border: 2px solid #4F46E5;">
+          <h4 style="color: #4F46E5;">🔧 ${stepTitle}</h4>
+          <p style="font-size: 13px; color: #64748b; margin-bottom: 12px;">${stepDesc}</p>
+          <div class="info-box" style="margin-top: 0;">
+            <strong>${isEn ? 'What should be done:' : '완료해야 할 항목:'}</strong>
+            <ul style="margin-top: 8px; padding-left: 20px;">
+              ${todoList.map(item => `<li>${item}</li>`).join('')}
+            </ul>
+          </div>
+        </div>
+        <p style="font-size: 13px; color: #64748b; margin-top: 12px;">${waitingText}</p>
+        <div style="margin-top: 8px;">
+          <button class="submit-btn" onclick="showStep3DashboardOrVerify()">✅ ${nextBtnText}</button>
+        </div>
+      `, { delay: 600 });
+    }
+
+    async function showStep3DashboardOrVerify() {
+      const isEn = state.language === 'en';
+      addUser(isEn ? 'SDK implementation done' : 'SDK 연동 완료');
+
+      // Check if dashboard settings are needed
+      const needsDashboardSettings = state.hasAds || state.needsDeeplink || state.hasIOS;
+
+      if (needsDashboardSettings) {
+        await showStep3Dashboard();
+      } else {
+        await showStep4Verification();
+      }
+    }
+
+    async function showStep3Dashboard() {
+      const isEn = state.language === 'en';
+      const stepTitle = isEn ? 'STEP 3: Dashboard Settings' : 'STEP 3: 대시보드 설정';
+      const stepDesc = isEn
+        ? 'Configure the following settings in Airbridge dashboard:'
+        : 'Airbridge 대시보드에서 아래 설정을 완료하세요:';
+
+      let dashboardItems = '';
+
+      if (state.hasAds) {
+        dashboardItems += `
+          <div class="feature-card" style="margin-bottom: 12px;">
+            <div class="feature-card-header">
+              <span class="icon">📢</span>
+              <h5>${isEn ? 'Ad Channel Integration' : '광고 채널 연동'}</h5>
+            </div>
+            <div class="detail-steps">
+              <ol>
+                <li>${isEn ? '<strong>[Integrations]</strong> → <strong>[Ad Channel]</strong>' : '<strong>[Integrations]</strong> → <strong>[Ad Channel]</strong>'}</li>
+                <li>${isEn ? 'Select your ad channel (Facebook, Google, etc.)' : '광고 채널 선택 (Facebook, Google 등)'}</li>
+                <li>${isEn ? 'Enter API credentials' : 'API 정보 입력'}</li>
+              </ol>
+            </div>
+            <label class="checklist-item" style="margin-top: 8px; cursor: pointer;">
+              <input type="checkbox" class="step3-check" onchange="updateStep3Button()">
+              <span class="icon">☐</span>
+              <span class="content">${isEn ? 'Done' : '완료'}</span>
+            </label>
+          </div>`;
+      }
+
+      if (state.needsDeeplink) {
+        dashboardItems += `
+          <div class="feature-card" style="margin-bottom: 12px;">
+            <div class="feature-card-header">
+              <span class="icon">🔗</span>
+              <h5>${isEn ? 'Deep Link Settings' : '딥링크 설정'}</h5>
+            </div>
+            <div class="detail-steps">
+              <ol>
+                <li>${isEn ? '<strong>[Settings]</strong> → <strong>[Deep Link]</strong>' : '<strong>[Settings]</strong> → <strong>[Deep Link]</strong>'}</li>
+                <li>${isEn ? 'Enter URI Scheme (e.g., myapp://)' : 'URI Scheme 입력 (예: myapp://)'}</li>
+                <li>${isEn ? 'Configure Universal Link domain (iOS)' : 'Universal Link 도메인 설정 (iOS)'}</li>
+              </ol>
+            </div>
+            <label class="checklist-item" style="margin-top: 8px; cursor: pointer;">
+              <input type="checkbox" class="step3-check" onchange="updateStep3Button()">
+              <span class="icon">☐</span>
+              <span class="content">${isEn ? 'Done' : '완료'}</span>
+            </label>
+          </div>`;
+      }
+
+      if (state.hasIOS) {
+        dashboardItems += `
+          <div class="feature-card" style="margin-bottom: 12px;">
+            <div class="feature-card-header">
+              <span class="icon">📊</span>
+              <h5>${isEn ? 'SKAN Settings' : 'SKAN 설정'}</h5>
+            </div>
+            <div class="detail-steps">
+              <ol>
+                <li>${isEn ? '<strong>[Settings]</strong> → <strong>[SKAN]</strong>' : '<strong>[Settings]</strong> → <strong>[SKAN]</strong>'}</li>
+                <li>${isEn ? 'Enable SKAN' : 'SKAN 활성화'}</li>
+                <li>${isEn ? 'Configure conversion values' : '전환값 설정'}</li>
+              </ol>
+            </div>
+            <label class="checklist-item" style="margin-top: 8px; cursor: pointer;">
+              <input type="checkbox" class="step3-check" onchange="updateStep3Button()">
+              <span class="icon">☐</span>
+              <span class="content">${isEn ? 'Done' : '완료'}</span>
+            </label>
+          </div>`;
+      }
+
+      const nextBtnText = isEn ? 'Dashboard settings done → Verify integration' : '대시보드 설정 완료 → 연동 확인하기';
+
+      await addBot(`
+        <div class="step-box" style="border: 2px solid #4F46E5;">
+          <h4 style="color: #4F46E5;">⚙️ ${stepTitle}</h4>
+          <p style="font-size: 13px; color: #64748b; margin-bottom: 12px;">${stepDesc}</p>
+          <div id="step3Checklist">
+            ${dashboardItems}
+          </div>
+          <div style="margin-top: 12px;">
+            <a href="https://app.airbridge.io" target="_blank" class="submit-btn help-btn" style="text-decoration: none; text-align: center; display: block; margin-bottom: 8px;">🔍 ${isEn ? 'Open Dashboard' : '대시보드 열기'}</a>
+            <button class="submit-btn" id="step3Btn" onclick="showStep4Verification()" disabled>✅ ${nextBtnText}</button>
+          </div>
+        </div>
+      `, { delay: 600 });
+    }
+
+    function updateStep3Button() {
+      const checkboxes = document.querySelectorAll('.step3-check');
+      const allChecked = Array.from(checkboxes).every(cb => cb.checked);
+      document.getElementById('step3Btn').disabled = !allChecked;
+      checkboxes.forEach(cb => {
+        const icon = cb.parentElement.querySelector('.icon');
+        icon.textContent = cb.checked ? '✅' : '☐';
+      });
+    }
+
+    async function showStep4Verification() {
+      const isEn = state.language === 'en';
+      const hasDashboardStep = state.hasAds || state.needsDeeplink || state.hasIOS;
+      if (hasDashboardStep) {
+        addUser(isEn ? 'Dashboard settings done' : '대시보드 설정 완료');
+      }
+
+      const stepNum = hasDashboardStep ? '4' : '3';
+      const stepTitle = isEn ? `STEP ${stepNum}: Verify Integration` : `STEP ${stepNum}: 연동 확인하기`;
+      const stepDesc = isEn
+        ? 'Check if events are being received correctly in the dashboard:'
+        : '대시보드에서 이벤트가 정상적으로 수신되는지 확인하세요:';
+
+      await addBot(`
+        <div class="step-box" style="border: 2px solid #4F46E5;">
+          <h4 style="color: #4F46E5;">🔍 ${stepTitle}</h4>
+          <p style="font-size: 13px; color: #64748b; margin-bottom: 12px;">${stepDesc}</p>
+
+          <div class="detail-steps" style="background: #f0f9ff; border-radius: 8px; padding: 12px; margin-bottom: 12px;">
+            <p style="font-weight: 600; margin-bottom: 8px; font-size: 13px;">${isEn ? 'How to check:' : '확인 방법:'}</p>
+            <ol style="font-size: 13px;">
+              <li>${isEn ? 'Run your app (simulator or real device)' : '앱 실행 (시뮬레이터 또는 실기기)'}</li>
+              <li>${isEn ? 'Go to <a href="https://app.airbridge.io" target="_blank">app.airbridge.io</a>' : '<a href="https://app.airbridge.io" target="_blank">app.airbridge.io</a> 접속'}</li>
+              <li>${isEn ? 'Click <strong>[Raw Data]</strong> → <strong>[App Real-time Log]</strong>' : '<strong>[Raw Data]</strong> → <strong>[App Real-time Log]</strong> 클릭'}</li>
+              <li>${isEn ? 'Trigger events in your app and check if they appear' : '앱에서 이벤트 발생시키고 로그 확인'}</li>
+            </ol>
+          </div>
+
+          <div class="mock-ui">
+            <div class="mock-ui-header">
+              <div class="mock-ui-dot red"></div>
+              <div class="mock-ui-dot yellow"></div>
+              <div class="mock-ui-dot green"></div>
+            </div>
+            <div class="mock-ui-content">
+              <div class="mock-ui-row"><span class="time">10:23:45</span> | <span class="event">Open</span> | Device: iPhone</div>
+              <div class="mock-ui-row highlight"><span class="time">10:23:47</span> | <span class="event">Event</span> | <span class="category">sign_in</span></div>
+            </div>
+          </div>
+
+          <div class="success-box" style="margin-top: 12px;">${isEn ? '✅ If events appear within 1-2 seconds, integration is successful!' : '✅ 1~2초 내에 이벤트가 보이면 연동 성공!'}</div>
+        </div>
+
+        <p style="font-size: 13px; color: #64748b; margin-top: 16px;">${isEn ? 'Did you see the events?' : '이벤트가 보이나요?'}</p>
+        <div class="btn-row" style="margin-top: 8px;">
+          <button class="submit-btn help-btn" onclick="showTroubleshooting()">❌ ${isEn ? 'Not showing' : '안 보여요'}</button>
+          <button class="submit-btn" onclick="showFinalSuccess()">✅ ${isEn ? 'Yes, I see them!' : '네, 보여요!'}</button>
+        </div>
+      `, { delay: 600 });
+    }
+
+    async function showFinalSuccess() {
+      const isEn = state.language === 'en';
+      addUser(isEn ? 'Events are showing!' : '이벤트 확인됨!');
+
+      await addBot(`
+        <div class="success-animation">
+          <div class="success-icon">🎉</div>
+          <h2 style="color: #4F46E5; margin-bottom: 8px;">${getText('congrats')}</h2>
+          <p style="color: #64748b;">${getText('congratsSubtitle')}</p>
+        </div>
+      `);
+
+      // Show next steps
+      let nextStepsHTML = `<p style="margin-top: 16px;"><strong>${getText('nextStepsTitle')}</strong></p><div class="checklist">`;
+      if (state.hasAds) {
+        nextStepsHTML += `<div class="checklist-item pending"><span class="icon">📢</span><span class="content">${getText('channelIntegration')}</span></div>`;
+      }
+      nextStepsHTML += `<div class="checklist-item pending"><span class="icon">🔗</span><span class="content">${getText('trackingLink')}</span></div>`;
+      nextStepsHTML += `<div class="checklist-item pending"><span class="icon">⏳</span><span class="content">${getText('waitData')}</span></div></div>`;
+
+      await addBot(`
+        ${nextStepsHTML}
+        <div style="margin-top: 16px;">
+          <a href="${getHelpLink()}" target="_blank" class="submit-btn" style="display: block; text-align: center; text-decoration: none;">${getText('helpCenter')}</a>
+        </div>
+      `);
     }
 
     function generateAITemplate() {
@@ -2125,187 +2382,6 @@ ${template}
       return spec;
     }
 
-    async function showDashboardVerification() {
-      const isEn = state.language === 'en';
-
-      // Dashboard configuration checklist with detailed instructions
-      let dashboardChecks = '';
-      if (state.hasAds) {
-        dashboardChecks += `
-          <div class="feature-card" style="margin-bottom: 12px;">
-            <div class="feature-card-header">
-              <span class="icon">📢</span>
-              <h5>${isEn ? 'Ad Channel Integration' : '광고 채널 연동'}</h5>
-            </div>
-            <p>${isEn ? 'Connect your ad channels to measure campaign performance.' : '캠페인 성과를 측정하려면 광고 채널을 연동해야 해요.'}</p>
-            <div class="detail-steps">
-              <ol>
-                <li>${isEn ? 'Go to <strong>[Integrations]</strong> in the left menu' : '왼쪽 메뉴에서 <strong>[Integrations]</strong> 클릭'}</li>
-                <li>${isEn ? 'Click <strong>[Ad Channel]</strong> tab' : '<strong>[Ad Channel]</strong> 탭 선택'}</li>
-                <li>${isEn ? 'Find and click your ad channel (Facebook, Google, etc.)' : '사용 중인 광고 채널 찾아서 클릭 (Facebook, Google 등)'}</li>
-                <li>${isEn ? 'Enter API credentials from your ad platform' : '광고 플랫폼에서 발급받은 API 정보 입력'}</li>
-              </ol>
-            </div>
-            <label class="checklist-item" style="margin-top: 12px; cursor: pointer;">
-              <input type="checkbox" class="dashboard-check" onchange="updateDashboardCheckIcon(this)">
-              <span class="icon">☐</span>
-              <span class="content">${isEn ? 'Ad channel connected' : '광고 채널 연동 완료'}</span>
-            </label>
-          </div>`;
-      }
-      if (state.needsDeeplink) {
-        dashboardChecks += `
-          <div class="feature-card" style="margin-bottom: 12px;">
-            <div class="feature-card-header">
-              <span class="icon">🔗</span>
-              <h5>${isEn ? 'Deep Link Configuration' : '딥링크 설정'}</h5>
-            </div>
-            <p>${isEn ? 'Configure deep link settings to enable direct app navigation.' : '앱 내 특정 화면으로 이동하려면 딥링크 설정이 필요해요.'}</p>
-            <div class="detail-steps">
-              <ol>
-                <li>${isEn ? 'Go to <strong>[Settings]</strong> in the left menu' : '왼쪽 메뉴에서 <strong>[Settings]</strong> 클릭'}</li>
-                <li>${isEn ? 'Click <strong>[Deep Link]</strong>' : '<strong>[Deep Link]</strong> 선택'}</li>
-                <li>${isEn ? 'Enter your <strong>URI Scheme</strong> (e.g., myapp://)' : '<strong>URI Scheme</strong> 입력 (예: myapp://)'}</li>
-                <li>${isEn ? 'Configure Universal Link domain if using iOS' : 'iOS라면 Universal Link 도메인도 설정'}</li>
-              </ol>
-            </div>
-            <label class="checklist-item" style="margin-top: 12px; cursor: pointer;">
-              <input type="checkbox" class="dashboard-check" onchange="updateDashboardCheckIcon(this)">
-              <span class="icon">☐</span>
-              <span class="content">${isEn ? 'Deep link configured' : '딥링크 설정 완료'}</span>
-            </label>
-          </div>`;
-      }
-      if (state.hasIOS) {
-        dashboardChecks += `
-          <div class="feature-card" style="margin-bottom: 12px;">
-            <div class="feature-card-header">
-              <span class="icon">📊</span>
-              <h5>${isEn ? 'SKAN Configuration' : 'SKAN 설정'}</h5>
-            </div>
-            <p>${isEn ? 'Configure SKAdNetwork for iOS ad measurement when ATT is denied.' : 'ATT가 거부되어도 iOS 광고 성과를 측정하려면 SKAN 설정이 필요해요.'}</p>
-            <div class="detail-steps">
-              <ol>
-                <li>${isEn ? 'Go to <strong>[Settings]</strong> in the left menu' : '왼쪽 메뉴에서 <strong>[Settings]</strong> 클릭'}</li>
-                <li>${isEn ? 'Click <strong>[SKAN]</strong>' : '<strong>[SKAN]</strong> 선택'}</li>
-                <li>${isEn ? 'Enable SKAN and configure conversion values' : 'SKAN 활성화 후 전환값 설정'}</li>
-              </ol>
-            </div>
-            <label class="checklist-item" style="margin-top: 12px; cursor: pointer;">
-              <input type="checkbox" class="dashboard-check" onchange="updateDashboardCheckIcon(this)">
-              <span class="icon">☐</span>
-              <span class="content">${isEn ? 'SKAN configured' : 'SKAN 설정 완료'}</span>
-            </label>
-          </div>`;
-      }
-
-      if (dashboardChecks) {
-        await addBot(`
-          <div class="dashboard-guide">
-            <h4>${getText('dashboardCheckTitle')}</h4>
-            <p style="margin-bottom: 12px;">${getText('dashboardCheckDesc')}</p>
-            ${dashboardChecks}
-            <div style="margin-top: 12px;">
-              <a href="${getHelpLink('/guides/integration-overview')}" target="_blank" class="submit-btn help-btn" style="text-decoration: none; text-align: center; display: block;">🔍 ${getText('checkingDashboard')}</a>
-            </div>
-          </div>
-        `, { delay: 400 });
-      }
-
-      await showVerificationGuide();
-    }
-
-    function updateDashboardCheckIcon(checkbox) {
-      const icon = checkbox.parentElement.querySelector('.icon');
-      icon.textContent = checkbox.checked ? '✅' : '☐';
-    }
-
-    async function showVerificationGuide() {
-      const isEn = state.language === 'en';
-      await addBot(`
-        <p>${getText('verificationTitle')}</p>
-        <p style="font-size: 13px; color: #64748b;">${getText('verificationExplain')}</p>
-        <div class="step-box">
-          <h4>📱 ${getText('realtimeLogTitle')}</h4>
-          <ol>
-            <li>${getText('verifyStep1')}</li>
-            <li>${getText('verifyStep2')}</li>
-            <li>${getText('verifyStep3')}</li>
-            <li>${getText('verifyStep4')}</li>
-            <li>${getText('verifyStep5')}</li>
-          </ol>
-        </div>
-        <div class="dashboard-guide" style="margin-top: 12px;">
-          <h4>${getText('dashboardVerifyTitle')}</h4>
-          <div class="path">${getText('dashboardVerifyPath')}</div>
-          <p>${getText('dashboardVerifyDesc')}</p>
-        </div>
-        <div class="mock-ui">
-          <div class="mock-ui-header">
-            <div class="mock-ui-dot red"></div>
-            <div class="mock-ui-dot yellow"></div>
-            <div class="mock-ui-dot green"></div>
-          </div>
-          <div class="mock-ui-content">
-            <div class="mock-ui-row"><span class="time">10:23:45</span> | <span class="event">Open</span> | Device: iPhone</div>
-            <div class="mock-ui-row highlight"><span class="time">10:23:47</span> | <span class="event">Event</span> | <span class="category">sign_in</span></div>
-          </div>
-        </div>
-        <div class="success-box">${getText('verifySuccess')}</div>
-        <div class="warning-box">${getText('verifyDelay')}</div>
-      `, { delay: 600 });
-
-      let checklistItems = `
-        <label class="checklist-item">
-          <input type="checkbox" class="verify-check" onchange="updateFinalVerifyButton()">
-          <span class="icon">☐</span>
-          <span class="content">${isEn ? 'SDK installed correctly' : 'SDK 설치 완료'}</span>
-        </label>
-        <label class="checklist-item">
-          <input type="checkbox" class="verify-check" onchange="updateFinalVerifyButton()">
-          <span class="icon">☐</span>
-          <span class="content">${isEn ? 'Open event received on app launch' : '앱 실행 시 Open 이벤트 수신됨'}</span>
-        </label>
-        <label class="checklist-item">
-          <input type="checkbox" class="verify-check" onchange="updateFinalVerifyButton()">
-          <span class="icon">☐</span>
-          <span class="content">${isEn ? 'sign_in event received on login' : '로그인 시 sign_in 이벤트 수신됨'}</span>
-        </label>`;
-      if (state.needsRevenue) {
-        checklistItems += `<label class="checklist-item"><input type="checkbox" class="verify-check" onchange="updateFinalVerifyButton()"><span class="icon">☐</span><span class="content">${isEn ? 'order_completed event received on purchase' : '구매 시 order_completed 이벤트 수신됨'}</span></label>`;
-      }
-      if (state.needsUserIdentity) {
-        checklistItems += `<label class="checklist-item"><input type="checkbox" class="verify-check" onchange="updateFinalVerifyButton()"><span class="icon">☐</span><span class="content">${isEn ? 'User ID visible in event details' : '이벤트 상세에서 User ID 확인됨'}</span></label>`;
-      }
-
-      await addBot(`
-        <div class="step-box" style="margin-top: 16px;">
-          <h4>✅ ${isEn ? 'Final Integration Checklist' : '최종 연동 체크리스트'}</h4>
-          <div class="checklist" id="finalVerifyChecklist">${checklistItems}</div>
-        </div>
-        <div class="btn-row" style="margin-top: 12px;">
-          <button class="submit-btn help-btn" onclick="showTroubleshooting()">🔧 ${getText('eventNotShowing')}</button>
-          <button class="submit-btn" id="finalVerifyBtn" onclick="confirmFinalVerification()" disabled>${isEn ? '🎉 Integration Complete!' : '🎉 연동 완료!'}</button>
-        </div>
-      `, { delay: 400 });
-    }
-
-    function updateFinalVerifyButton() {
-      const container = document.getElementById('finalVerifyChecklist');
-      const checkboxes = container.querySelectorAll('.verify-check');
-      const allChecked = Array.from(checkboxes).every(cb => cb.checked);
-      document.getElementById('finalVerifyBtn').disabled = !allChecked;
-      checkboxes.forEach(cb => {
-        const icon = cb.parentElement.querySelector('.icon');
-        icon.textContent = cb.checked ? '✅' : '☐';
-      });
-    }
-
-    async function confirmFinalVerification() {
-      addUser(state.language === 'en' ? 'Integration Complete!' : '연동 완료!');
-      await showNextSteps();
-    }
-
     async function showTroubleshooting() {
       addUser(getText('eventNotShowing'));
       await addBot(`
@@ -2319,32 +2395,6 @@ ${template}
         </div>
         <div style="margin-top: 12px;">
           <a href="${getHelpLink('/developers')}" target="_blank" class="submit-btn secondary" style="text-decoration: none; text-align: center; display: block;">📚 ${state.language === 'en' ? 'View Troubleshooting Guide' : '문제 해결 가이드 보기'}</a>
-        </div>
-      `);
-    }
-
-    async function showNextSteps() {
-      let nextStepsHTML = `<p>${getText('nextStepsTitle')}</p><div class="checklist">`;
-      if (state.hasAds) {
-        nextStepsHTML += `<div class="checklist-item pending"><span class="icon">📢</span><span class="content">${getText('channelIntegration')}</span></div>`;
-      }
-      if (state.hasIOS) {
-        nextStepsHTML += `<div class="checklist-item pending"><span class="icon">📊</span><span class="content">${getText('skanSetup')}</span></div>`;
-      }
-      if (state.needsDeeplink) {
-        nextStepsHTML += `<div class="checklist-item pending"><span class="icon">🔗</span><span class="content">${getText('deeplinkDomain')}</span></div>`;
-      }
-      nextStepsHTML += `<div class="checklist-item pending"><span class="icon">⏳</span><span class="content">${getText('waitData')}</span></div></div>`;
-      await addBot(nextStepsHTML);
-
-      await addBot(`
-        <div class="success-animation">
-          <div class="success-icon">🎉</div>
-          <h2 style="color: #4F46E5; margin-bottom: 8px;">${getText('congrats')}</h2>
-          <p style="color: #64748b;">${getText('congratsSubtitle')}</p>
-        </div>
-        <div style="margin-top: 16px;">
-          <a href="${getHelpLink()}" target="_blank" class="submit-btn" style="display: block; text-align: center; text-decoration: none;">${getText('helpCenter')}</a>
         </div>
       `);
     }
