@@ -19,7 +19,7 @@
 
     .chat-container {
       width: 100%;
-      max-width: 480px;
+      max-width: 520px;
       background: white;
       border-radius: 20px;
       box-shadow: 0 20px 60px rgba(0,0,0,0.3);
@@ -105,7 +105,7 @@
     }
 
     .chat-messages {
-      height: 500px;
+      height: 520px;
       overflow-y: auto;
       padding: 16px;
       background: #f8fafc;
@@ -140,13 +140,15 @@
 
     .bot-bubble {
       background: white;
-      padding: 12px 16px;
+      padding: 14px 16px;
       border-radius: 0 16px 16px 16px;
       box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-      max-width: 85%;
+      max-width: 88%;
       font-size: 14px;
-      line-height: 1.5;
+      line-height: 1.6;
       color: #1e293b;
+      word-break: keep-all;
+      overflow-wrap: break-word;
     }
 
     .user-message {
@@ -161,6 +163,8 @@
       border-radius: 16px 0 16px 16px;
       max-width: 85%;
       font-size: 14px;
+      word-break: keep-all;
+      overflow-wrap: break-word;
     }
 
     .typing-indicator {
@@ -195,6 +199,7 @@
     .options-row {
       display: flex;
       gap: 8px;
+      flex-wrap: wrap;
     }
 
     .option-btn {
@@ -211,6 +216,7 @@
       color: #1e293b;
       width: 100%;
       text-align: left;
+      word-break: keep-all;
     }
 
     .option-btn:hover {
@@ -218,7 +224,27 @@
       background: #f5f3ff;
     }
 
-    .option-icon { font-size: 18px; }
+    .option-icon {
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+
+    .option-btn-content {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .option-btn-content strong {
+      display: block;
+      margin-bottom: 2px;
+    }
+
+    .option-btn-content p {
+      font-size: 12px;
+      color: #64748b;
+      margin: 0;
+      word-break: keep-all;
+    }
 
     .input-container {
       margin-top: 12px;
@@ -246,7 +272,7 @@
 
     .submit-btn {
       width: 100%;
-      padding: 12px;
+      padding: 12px 16px;
       background: linear-gradient(135deg, #4F46E5, #7C3AED);
       color: white;
       border: none;
@@ -255,6 +281,7 @@
       font-weight: 600;
       cursor: pointer;
       transition: transform 0.2s, box-shadow 0.2s;
+      word-break: keep-all;
     }
 
     .submit-btn:hover:not(:disabled) {
@@ -278,13 +305,29 @@
       transform: none;
     }
 
+    .submit-btn.help-btn {
+      background: #fef3c7;
+      color: #92400e;
+      border: 2px solid #f59e0b;
+      font-weight: 600;
+    }
+
+    .submit-btn.help-btn:hover:not(:disabled) {
+      background: #fde68a;
+      box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+    }
+
     .btn-row {
       display: flex;
       gap: 8px;
       margin-top: 8px;
+      flex-wrap: wrap;
     }
 
-    .btn-row .submit-btn { flex: 1; }
+    .btn-row .submit-btn {
+      flex: 1;
+      min-width: 120px;
+    }
 
     .code-block {
       background: #1e293b;
@@ -297,7 +340,8 @@
       margin-top: 12px;
       position: relative;
       white-space: pre-wrap;
-      word-break: break-all;
+      word-break: break-word;
+      overflow-wrap: break-word;
     }
 
     .copy-btn {
@@ -337,6 +381,7 @@
       margin-top: 12px;
       font-size: 13px;
       color: #92400e;
+      word-break: keep-all;
     }
 
     .info-box {
@@ -347,6 +392,7 @@
       margin-top: 12px;
       font-size: 13px;
       color: #1e40af;
+      word-break: keep-all;
     }
 
     .success-box {
@@ -357,6 +403,7 @@
       margin-top: 12px;
       font-size: 13px;
       color: #166534;
+      word-break: keep-all;
     }
 
     .error-box {
@@ -367,6 +414,7 @@
       margin-top: 12px;
       font-size: 13px;
       color: #991b1b;
+      word-break: keep-all;
     }
 
     .step-box {
@@ -384,6 +432,7 @@
       display: flex;
       align-items: center;
       gap: 8px;
+      word-break: keep-all;
     }
 
     .step-box ol, .step-box ul {
@@ -392,8 +441,21 @@
       color: #475569;
     }
 
-    .step-box li { margin-bottom: 8px; }
+    .step-box li {
+      margin-bottom: 10px;
+      word-break: keep-all;
+      line-height: 1.5;
+    }
     .step-box li:last-child { margin-bottom: 0; }
+
+    .step-box .step-detail {
+      background: #f1f5f9;
+      border-radius: 8px;
+      padding: 10px 12px;
+      margin-top: 6px;
+      font-size: 12px;
+      color: #64748b;
+    }
 
     .checklist {
       margin-top: 12px;
@@ -403,12 +465,14 @@
       display: flex;
       align-items: flex-start;
       gap: 10px;
-      padding: 10px 14px;
+      padding: 12px 14px;
       background: #f8fafc;
       border-radius: 10px;
       margin-bottom: 8px;
       font-size: 13px;
       color: #475569;
+      word-break: keep-all;
+      line-height: 1.5;
     }
 
     .checklist-item:last-child { margin-bottom: 0; }
@@ -420,6 +484,7 @@
     .checklist-item label, label.checklist-item {
       cursor: pointer;
       transition: background-color 0.2s;
+      width: 100%;
     }
 
     .checklist-item label:hover, label.checklist-item:hover {
@@ -433,6 +498,10 @@
       display: flex;
       align-items: center;
       justify-content: center;
+    }
+
+    .checklist-item .content {
+      flex: 1;
     }
 
     .checklist-item.done { background: #dcfce7; color: #166534; }
@@ -465,6 +534,27 @@
       font-size: 13px;
       color: #64748b;
       margin-bottom: 12px;
+      word-break: keep-all;
+      line-height: 1.5;
+    }
+
+    .feature-card .detail-steps {
+      background: #f8fafc;
+      border-radius: 8px;
+      padding: 12px;
+      margin-top: 8px;
+    }
+
+    .feature-card .detail-steps ol {
+      padding-left: 18px;
+      font-size: 12px;
+      color: #475569;
+      margin: 0;
+    }
+
+    .feature-card .detail-steps li {
+      margin-bottom: 6px;
+      line-height: 1.4;
     }
 
     .mock-ui {
@@ -519,6 +609,7 @@
       padding: 8px 10px;
       border: 1px solid #e2e8f0;
       text-align: left;
+      word-break: keep-all;
     }
 
     .summary-table th {
@@ -563,6 +654,101 @@
     a.submit-btn:hover,
     a.submit-btn:active {
       color: white !important;
+    }
+
+    .help-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      color: #4F46E5;
+      font-size: 12px;
+      text-decoration: none;
+      margin-top: 8px;
+    }
+
+    .help-link:hover {
+      text-decoration: underline;
+    }
+
+    .dashboard-guide {
+      background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+      border: 1px solid #0ea5e9;
+      border-radius: 12px;
+      padding: 16px;
+      margin-top: 12px;
+    }
+
+    .dashboard-guide h4 {
+      color: #0369a1;
+      font-size: 14px;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .dashboard-guide .path {
+      background: white;
+      border-radius: 6px;
+      padding: 8px 12px;
+      font-family: 'SF Mono', Monaco, monospace;
+      font-size: 12px;
+      color: #0369a1;
+      margin-bottom: 8px;
+    }
+
+    .dashboard-guide p {
+      font-size: 13px;
+      color: #0c4a6e;
+      line-height: 1.5;
+    }
+
+    .expandable {
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      margin-top: 12px;
+      overflow: hidden;
+    }
+
+    .expandable-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 14px;
+      background: #f8fafc;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .expandable-header:hover {
+      background: #f1f5f9;
+    }
+
+    .expandable-header h5 {
+      font-size: 13px;
+      color: #475569;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .expandable-header .arrow {
+      transition: transform 0.2s;
+    }
+
+    .expandable-header.open .arrow {
+      transform: rotate(180deg);
+    }
+
+    .expandable-content {
+      display: none;
+      padding: 14px;
+      background: white;
+      border-top: 1px solid #e2e8f0;
+    }
+
+    .expandable-content.open {
+      display: block;
     }
   </style>
 </head>
@@ -624,60 +810,77 @@
         langEnglish: 'English',
         welcome1: '안녕하세요! 👋',
         welcome2: '<strong>Airbridge SDK 연동</strong>을 도와드릴게요.',
-        welcome3: '필요한 기능만 선택해서 <strong>맞춤형 템플릿</strong>을 만들어드립니다.',
+        welcome3: '처음이시라도 괜찮아요! 하나씩 차근차근 안내해 드릴게요.',
+        welcomeTip: '💡 모르는 부분이 있으면 언제든 "도움이 필요해요" 버튼을 눌러주세요.',
         askAppRegistered: '먼저, <strong>Airbridge 대시보드에 앱을 등록</strong>하셨나요?',
+        whatIsThis: '이게 뭔가요?',
         yesRegistered: '네, 등록했어요',
         notYet: '아직이요',
-        registerFirst: '먼저 앱을 등록해야 해요.',
-        registerStepTitle: '📝 앱 등록하기',
-        registerStep1: '접속',
-        registerStep2: '로그인 후 <strong>+ 버튼</strong> 클릭',
-        registerStep3: '앱 정보 입력',
+        needHelp: '도움이 필요해요',
+        registerFirst: '먼저 앱을 등록해야 해요. 아래 단계를 따라해주세요!',
+        registerStepTitle: '📝 앱 등록하기 (약 2분 소요)',
+        registerStep1: '<a href="https://app.airbridge.io" target="_blank">app.airbridge.io</a>에 접속해주세요',
+        registerStep1Detail: '처음이시라면 먼저 회원가입이 필요해요',
+        registerStep2: '로그인 후 왼쪽 상단의 <strong>+ 버튼</strong>을 클릭해주세요',
+        registerStep2Detail: '앱 목록이 보이는 드롭다운 메뉴에 있어요',
+        registerStep3: '앱 정보를 입력해주세요',
+        registerStep3Detail: 'App Name은 영문 소문자와 숫자만 사용할 수 있어요 (예: myshop, app2024)',
         unchangeableWarning: '⚠️ <strong>등록 후 변경 불가:</strong>',
-        unchangeableItems: '• App Name (소문자+숫자만)<br>• App Mode (Production/Development)<br>• Time Zone, Currency',
-        testAppTip: '💡 테스트용 앱은 이름에 "dev" 또는 "test" 포함 권장',
+        unchangeableItems: 'App Name, App Mode, Time Zone, Currency는 한번 설정하면 변경할 수 없어요. 신중하게 입력해주세요!',
+        testAppTip: '💡 <strong>팁:</strong> 테스트용 앱은 이름에 "dev" 또는 "test"를 포함하는 것을 권장해요. 나중에 운영 앱과 구분하기 쉬워요!',
         registrationDone: '등록 완료했어요!',
         askAppMode: '앱을 어떤 <strong>모드</strong>로 등록하셨나요?',
+        appModeExplain: '앱 모드는 데이터를 분리하기 위한 설정이에요.',
         appModeWarning: '⚠️ 앱 모드는 등록 후 변경할 수 없어요',
-        productionMode: '운영 모드',
-        productionModeDesc: '앱마켓 출시용 (실제 캠페인 운영)',
-        developmentMode: '개발 모드',
-        developmentModeDesc: '테스트/스테이징용 (내부 테스트)',
+        productionMode: '운영 모드 (Production)',
+        productionModeDesc: '실제 앱스토어에 출시할 앱이에요',
+        developmentMode: '개발 모드 (Development)',
+        developmentModeDesc: '테스트/스테이징용 앱이에요',
+        modeHelpTitle: '어떤 걸 선택해야 할지 모르겠어요',
+        modeHelpContent: '<strong>운영 모드:</strong> 실제 사용자가 쓸 앱. 앱스토어/플레이스토어에 출시할 앱이면 이걸 선택하세요.<br><br><strong>개발 모드:</strong> 테스트용 앱. 개발하면서 테스트할 때 사용하세요. 테스트 데이터가 실제 데이터와 섞이지 않아요.',
         selectedProduction: '운영 모드로 등록했어요',
         selectedDevelopment: '개발 모드로 등록했어요',
-        productionTip: '✅ 실제 캠페인 성과를 측정할 수 있어요.',
-        developmentTip: '✅ 테스트 데이터가 운영 데이터와 섞이지 않아요.',
+        productionTip: '✅ 좋아요! 실제 캠페인 성과를 측정할 수 있어요.',
+        developmentTip: '✅ 좋아요! 테스트 데이터가 운영 데이터와 섞이지 않아요.',
         askImplementation: '<strong>SDK 연동을 어떻게 진행하시나요?</strong>',
+        implExplain: 'AI를 활용하면 더 빠르게 연동할 수 있어요!',
         implAI: 'AI로 직접 구현',
-        implAIDesc: 'Claude Code 등으로 직접 개발',
+        implAIDesc: 'Claude, ChatGPT 등으로 직접 개발할 거예요',
         implDevTeam: '개발팀에 요청',
-        implDevTeamDesc: '요구사항을 정리해서 전달',
+        implDevTeamDesc: '요구사항을 정리해서 개발팀에 전달할 거예요',
         implAISelected: 'AI로 직접 구현할게요',
         implDevTeamSelected: '개발팀에 요청할 거예요',
-        implAIResponse: '좋아요! 💪 Claude Code에서 바로 사용할 수 있는 <strong>프롬프트 템플릿</strong>을 만들어드릴게요.',
+        implAIResponse: '좋아요! 💪 AI에서 바로 사용할 수 있는 <strong>상세한 프롬프트</strong>를 만들어드릴게요.',
         implDevTeamResponse: '알겠어요! 개발팀에게 전달할 수 있는 <strong>요구사항 명세서</strong>와 <strong>확인 체크리스트</strong>를 만들어드릴게요.',
         askPlatform: '어떤 플랫폼으로 개발하고 있나요?',
+        platformExplain: '플랫폼에 맞는 SDK 설치 방법을 안내해드릴게요.',
         askiOSSupport: '이 앱이 <strong>iOS도 지원</strong>하나요?',
-        iOSTip: '💡 iOS 앱이면 추가 설정(ATT, SKAN)이 필요해요',
+        iOSExplain: 'iOS 앱은 애플의 개인정보 보호 정책으로 인해 추가 설정이 필요해요.',
+        iOSTip: '💡 iOS 앱이면 ATT(App Tracking Transparency)와 SKAN 설정이 필요해요',
         yesiOS: '네, iOS 지원해요',
         androidOnly: 'Android만이요',
         askSDKToken: '이제 <strong>SDK 토큰</strong>을 입력해주세요.',
-        tokenLocationTitle: '📍 토큰 찾는 곳',
-        tokenStep1: '→ 앱 선택',
-        tokenStep2: '<strong>Settings</strong> (⚙️) 클릭',
-        tokenStep3: '<strong>Tokens</strong> 탭에서 복사',
+        tokenExplain: 'SDK 토큰은 앱을 식별하는 고유한 키예요. 대시보드에서 복사할 수 있어요.',
+        tokenLocationTitle: '📍 토큰 찾는 방법',
+        tokenStep1: '<a href="https://app.airbridge.io" target="_blank">app.airbridge.io</a>에 접속',
+        tokenStep2: '왼쪽 상단에서 앱을 선택',
+        tokenStep3: '왼쪽 메뉴에서 <strong>Settings (⚙️)</strong> 클릭',
+        tokenStep4: '<strong>Tokens</strong> 탭에서 SDK Token 복사',
         appNamePlaceholder: 'App Name (예: myshop)',
         sdkTokenPlaceholder: 'SDK Token (32자리)',
+        appNameHelp: '대시보드에 등록한 앱 이름과 동일해야 해요',
         next: '다음',
         basicInfoDone: '기본 정보 입력 완료! ✅',
         askEvents: '이제 <strong>트래킹할 이벤트</strong>를 정할게요.',
+        eventsExplain: '이벤트란 사용자가 앱에서 하는 행동이에요. 예: 로그인, 구매, 장바구니 담기 등',
         basicEventsIncluded: '기본 이벤트(회원가입, 로그인)는 자동으로 포함됩니다.',
         signUp: '회원가입',
         signIn: '로그인',
         askRevenue: '<strong>구매/결제 같은 매출 이벤트</strong>를 트래킹하고 싶으세요?',
-        revenueTip: '💡 매출 이벤트를 추가하면 ROAS(광고수익률) 분석이 가능해요',
+        revenueExplain: '매출 이벤트를 트래킹하면 광고비 대비 수익(ROAS)을 분석할 수 있어요.',
+        revenueTip: '💡 이커머스/쇼핑 앱이라면 필수예요!',
         yesNeed: '네, 필요해요',
-        skip: '아니요, 건너뛸게요',
+        skip: '건너뛰기',
         revenueNeeded: '매출 이벤트 필요해요',
         skipped: '건너뛸게요',
         revenueAdded: '매출 관련 이벤트를 추가했어요:',
@@ -685,35 +888,65 @@
         addToCart: '장바구니 추가',
         orderCompleted: '구매 완료',
         askAdditionalEvents: '<strong>추가로 트래킹하고 싶은 이벤트</strong>가 있나요?',
+        additionalEventsExplain: '앱에서 중요한 사용자 행동이 있다면 추가해주세요.',
         addCustom: '직접 추가할게요',
         enough: '이 정도면 충분해요',
         customEventTitle: '📝 추가 이벤트 입력',
-        customEventDesc: '이벤트를 한 줄씩 입력하세요',
+        customEventDesc: '이벤트를 한 줄씩 입력해주세요. 예: 검색, 공유, 좋아요',
         customEventPlaceholder: '예:\n검색\n공유\n좋아요',
         addEvents: '추가하기',
         eventsAdded: '이벤트를 추가했어요:',
-        askAds: '<strong>광고를 집행</strong>하고 계시나요?',
-        adsTip: '💡 광고 성과 측정을 위한 어트리뷰션 설정이 필요해요',
+        askAds: '<strong>광고 캠페인</strong>을 운영하고 있나요?',
+        adsExplain: '광고를 통해 유저를 유입시키고 있다면, 어트리뷰션 설정이 필요해요.',
+        adsTip: '💡 어트리뷰션이란? 어떤 광고가 앱 설치로 이어졌는지 추적하는 기능이에요.',
         yesAds: '네, 광고해요',
         noAds: '아니요',
         adsYes: '광고하고 있어요',
         adsNo: '광고 안 해요',
         adsAddedInfo: '✅ 광고 성과 측정을 위해 채널 연동이 필요해요.',
-        adsNextStep: '대시보드 [Channel Integration]에서 광고 채널을 연동하세요.',
-        askDeeplink: '<strong>딥링크(앱 내 특정 화면으로 이동)</strong>가 필요하세요?',
-        deeplinkTip: '💡 광고 클릭 → 앱 설치 → 특정 화면 이동에 사용',
+        attributionTitle: '📊 어트리뷰션 설정하기',
+        attributionDesc: '광고 채널(Facebook, Google 등)과 Airbridge를 연동해야 광고 성과를 측정할 수 있어요.',
+        attributionSteps: '대시보드에서 설정하기',
+        attributionStep1: 'app.airbridge.io 접속',
+        attributionStep2: '왼쪽 메뉴에서 [Integrations] 클릭',
+        attributionStep3: '[Ad Channel] 탭에서 연동할 광고 채널 선택',
+        attributionStep4: '광고 채널의 API 키 입력',
+        attributionHelpLink: '📚 어트리뷰션 상세 가이드',
+        askDeeplink: '<strong>딥링크</strong>가 필요하세요?',
+        deeplinkExplain: '딥링크란 앱의 특정 화면으로 바로 이동시키는 링크예요.',
+        deeplinkExample: '예: 광고 클릭 → 앱 설치 → 특정 상품 페이지로 바로 이동',
+        deeplinkTip: '💡 광고나 마케팅을 한다면 딥링크가 필요할 가능성이 높아요!',
         yesDeeplink: '네, 필요해요',
-        noDeeplink: '필요 없어요',
+        noDeeplink: '나중에 할게요',
         deeplinkNeeded: '딥링크 필요해요',
-        deeplinkNotNeeded: '딥링크 필요 없어요',
+        deeplinkNotNeeded: '나중에 할게요',
         deeplinkAdded: '✅ 딥링크 설정을 템플릿에 포함할게요.',
+        deeplinkTitle: '🔗 딥링크 설정하기',
+        deeplinkDesc: '딥링크를 사용하려면 앱과 대시보드 양쪽에서 설정이 필요해요.',
+        deeplinkAppSetup: '앱에서 설정할 내용 (개발 필요):',
+        deeplinkAppStep1: 'URI Scheme 등록 (예: myapp://)',
+        deeplinkAppStep2: 'Universal Link / App Link 설정',
+        deeplinkAppStep3: '딥링크 수신 코드 구현',
+        deeplinkDashboardSetup: '대시보드에서 설정할 내용:',
+        deeplinkDashboardStep1: '[Settings] → [Deep Link] 메뉴 이동',
+        deeplinkDashboardStep2: 'URI Scheme 입력 (앱과 동일하게)',
+        deeplinkDashboardStep3: 'Universal Link 도메인 설정',
+        deeplinkHelpLink: '📚 딥링크 상세 가이드',
         askUserIdentity: '<strong>로그인한 유저를 식별</strong>해야 하나요?',
-        userIdentityTip: '💡 크로스 디바이스 추적, 유저별 분석에 필요',
+        userIdentityExplain: '유저 식별자를 설정하면 같은 유저가 여러 기기를 사용해도 한 명으로 인식할 수 있어요.',
+        userIdentityTip: '💡 로그인 기능이 있는 앱이라면 권장해요!',
         yesUserIdentity: '네, 필요해요',
-        noUserIdentity: '필요 없어요',
+        noUserIdentity: '나중에 할게요',
         userIdentityNeeded: '유저 식별 필요해요',
-        userIdentityNotNeeded: '유저 식별 필요 없어요',
+        userIdentityNotNeeded: '나중에 할게요',
         userIdentityAdded: '✅ 유저 식별자 설정을 템플릿에 포함할게요.',
+        userIdentityTitle: '👤 유저 식별자 설정하기',
+        userIdentityDesc: '로그인 시 유저의 고유 ID를 Airbridge에 전달하면 돼요.',
+        userIdentityCode: '로그인 성공 시 호출:',
+        userIdentityDashboard: '대시보드에서 확인하기:',
+        userIdentityDashboardStep1: '[Raw Data] → [App Real-time Log] 이동',
+        userIdentityDashboardStep2: '이벤트 클릭 → User 정보에서 ID 확인',
+        userIdentityHelpLink: '📚 유저 식별자 상세 가이드',
         summaryItem: '항목',
         summarySetting: '설정',
         summaryPlatform: '플랫폼',
@@ -725,35 +958,41 @@
         summaryATT: 'ATT 설정',
         yes: '예',
         no: '아니오',
-        pasteToClaudeCode: '아래 템플릿을 <strong>Claude Code</strong>에 붙여넣으세요:',
+        pasteToClaudeCode: '아래 템플릿을 <strong>AI (Claude, ChatGPT 등)</strong>에 붙여넣으세요:',
         sendToDevTeam: '아래 <strong>요구사항 명세서</strong>를 개발팀에게 전달하세요:',
         copy: '복사',
         copied: '복사됨!',
-        verificationTitle: '<strong>연동 완료 후 확인 방법:</strong>',
-        realtimeLogTitle: '🔍 실시간 로그 확인',
-        verifyStep1: '앱 실행 (시뮬레이터/실기기)',
-        verifyStep2: '접속',
-        verifyStep3: '[Raw Data] → [App Real-time Log]',
-        verifyStep4: '이벤트 발생시키고 로그 확인',
+        verificationTitle: '<strong>🔍 연동이 완료되면 확인해주세요!</strong>',
+        verificationExplain: 'SDK 연동이 제대로 됐는지 대시보드에서 직접 확인할 수 있어요.',
+        realtimeLogTitle: '실시간 로그로 확인하기',
+        verifyStep1: '앱을 실행해주세요 (시뮬레이터 또는 실제 기기)',
+        verifyStep2: '<a href="https://app.airbridge.io" target="_blank">app.airbridge.io</a>에 접속',
+        verifyStep3: '왼쪽 메뉴에서 <strong>[Raw Data]</strong> 클릭',
+        verifyStep4: '<strong>[App Real-time Log]</strong> 선택',
+        verifyStep5: '앱에서 이벤트를 발생시키고 로그 확인',
         verifySuccess: '✅ 이벤트가 1~2초 내에 보이면 성공!',
-        verifyDelay: '⚠️ 최근 10분 이내 이벤트는 조회 지연될 수 있어요',
+        verifyDelay: '⚠️ 최대 10분까지 지연될 수 있어요. 조금 기다려주세요.',
+        dashboardVerifyTitle: '📊 대시보드에서 확인하기',
+        dashboardVerifyPath: '[Raw Data] → [App Real-time Log]',
+        dashboardVerifyDesc: '이벤트 이름, 유저 정보, 시간 등을 확인할 수 있어요.',
         eventNotShowing: '이벤트가 안 보여요',
         troubleshootTitle: '<strong>문제 해결 체크리스트:</strong>',
-        troubleshoot1: 'SDK 토큰이 정확한가요?',
-        troubleshoot2: '앱 이름이 대시보드와 일치하나요?',
-        troubleshoot3: '이벤트 호출 코드가 실행되나요?',
-        troubleshoot4: '네트워크 연결 상태 확인',
-        askClaudeCode: 'Claude Code에 이렇게 요청하세요:',
+        troubleshoot1: 'SDK 토큰이 정확한가요? (대시보드에서 다시 복사해보세요)',
+        troubleshoot2: 'App Name이 대시보드와 정확히 일치하나요?',
+        troubleshoot3: '이벤트 호출 코드가 실행되고 있나요? (로그 확인)',
+        troubleshoot4: '기기가 인터넷에 연결되어 있나요?',
+        troubleshoot5: '앱이 백그라운드가 아닌 포그라운드에서 실행 중인가요?',
+        askClaudeCode: 'AI에 이렇게 요청하세요:',
         askDevTeam: '<strong>개발팀에 확인 요청:</strong>',
         nextStepsBtn: '다음 단계 안내',
         restartBtn: '처음부터 다시',
         nextStepsTitle: '<strong>연동 완료 후 할 일:</strong>',
-        channelIntegration: '<strong>광고 채널 연동</strong><br>대시보드 [Channel Integration]',
+        channelIntegration: '<strong>광고 채널 연동</strong><br>대시보드 [Integrations] → [Ad Channel]',
         trackingLink: '<strong>트래킹 링크 생성</strong><br>대시보드 [Tracking Link]',
-        skanSetup: '<strong>SKAN 설정</strong><br>[Management] > [SKAN Conversion Value]',
-        deeplinkDomain: '<strong>딥링크 도메인 설정</strong><br>대시보드 [Deep Links]',
-        waitData: '<strong>1~2일 대기</strong><br>데이터 충분히 수집 후 리포트 확인',
-        congrats: '수고하셨습니다!',
+        skanSetup: '<strong>SKAN 설정 (iOS)</strong><br>[Settings] → [SKAN]',
+        deeplinkDomain: '<strong>딥링크 도메인 설정</strong><br>[Settings] → [Deep Link]',
+        waitData: '<strong>1~2일 대기</strong><br>데이터가 충분히 쌓인 후 리포트 확인',
+        congrats: '수고하셨습니다! 🎉',
         congratsSubtitle: 'Airbridge 연동이 완료되었습니다.',
         helpCenter: '📚 Airbridge 도움말 센터',
         onPayment: '결제 완료 시',
@@ -762,11 +1001,11 @@
         onAction: '해당 액션 시',
         verifyBeforeProceed: '진행하기 전에 확인해주세요:',
         verifyAppRegistration: '앱 등록 확인',
-        verifyAppCheck1: '대시보드에서 앱이 보이나요?',
-        verifyAppCheck2: '앱 이름이 정확한가요?',
-        verifyAppCheck3: 'Settings 메뉴에 접근 가능한가요?',
-        verifyConfirmBtn: '✅ 확인 완료',
-        verifyHelpBtn: '❓ 도움이 필요해요',
+        verifyAppCheck1: '대시보드에서 내 앱이 보이나요?',
+        verifyAppCheck2: 'App Name이 정확한가요?',
+        verifyAppCheck3: 'Settings 메뉴에 접근할 수 있나요?',
+        verifyConfirmBtn: '모두 확인했어요 ✅',
+        verifyHelpBtn: '도움이 필요해요',
         tokenValid: '✅ 토큰 형식이 올바릅니다',
         tokenInvalid: '⚠️ 토큰 형식을 확인해주세요 (32자리 영문/숫자)',
         tokenVerifyTitle: 'SDK 토큰 검증',
@@ -774,7 +1013,23 @@
         tokenVerifyStep1: 'app.airbridge.io → 앱 선택',
         tokenVerifyStep2: 'Settings (⚙️) → Tokens 탭',
         tokenVerifyStep3: 'SDK Token 값과 일치하는지 확인',
-        tokenMismatchWarning: '토큰이 다르면 이벤트가 전송되지 않습니다'
+        tokenMismatchWarning: '토큰이 다르면 이벤트가 전송되지 않습니다',
+        iOSSettingsTitle: '🍎 iOS 추가 설정',
+        iOSSettingsDesc: 'iOS 14 이후부터 애플의 개인정보 보호 정책으로 인해 추가 설정이 필요해요.',
+        attTitle: 'ATT (App Tracking Transparency)',
+        attDesc: '사용자에게 추적 허용을 요청하는 팝업이에요. 광고 성과 측정에 필수!',
+        attStep1: 'Info.plist에 NSUserTrackingUsageDescription 추가',
+        attStep2: 'ATT 권한 요청 코드 구현',
+        attStep3: 'Airbridge SDK에 ATT 응답 전달',
+        skanTitle: 'SKAN (SKAdNetwork)',
+        skanDesc: 'ATT 거부 시에도 광고 성과를 측정할 수 있는 애플의 대안이에요.',
+        skanStep1: 'Info.plist에 SKAdNetworkItems 추가',
+        skanStep2: '대시보드에서 [Settings] → [SKAN] 설정',
+        iOSHelpLink: '📚 iOS 설정 상세 가이드',
+        gotItInclude: '이해했어요, 포함해주세요',
+        checkingDashboard: '대시보드 설정 확인하기',
+        dashboardCheckTitle: '📋 대시보드 설정 체크리스트',
+        dashboardCheckDesc: '아래 항목들이 대시보드에 제대로 설정되어 있는지 확인해주세요.'
       },
       en: {
         headerTitle: 'Airbridge SDK Integration Guide',
@@ -788,60 +1043,77 @@
         langEnglish: 'English',
         welcome1: 'Hello! 👋',
         welcome2: "I'll help you with <strong>Airbridge SDK integration</strong>.",
-        welcome3: 'Select only the features you need and get a <strong>customized template</strong>.',
+        welcome3: "Even if it's your first time, no worries! I'll guide you step by step.",
+        welcomeTip: '💡 If you need help at any point, just click the "Need help" button.',
         askAppRegistered: 'First, have you <strong>registered your app in the Airbridge dashboard</strong>?',
+        whatIsThis: "What's this?",
         yesRegistered: 'Yes, registered',
         notYet: 'Not yet',
-        registerFirst: 'You need to register your app first.',
-        registerStepTitle: '📝 Register App',
-        registerStep1: 'Go to',
-        registerStep2: 'After login, click <strong>+ button</strong>',
-        registerStep3: 'Enter app information',
+        needHelp: 'Need help',
+        registerFirst: 'You need to register your app first. Follow the steps below!',
+        registerStepTitle: '📝 Register App (takes about 2 minutes)',
+        registerStep1: 'Go to <a href="https://app.airbridge.io" target="_blank">app.airbridge.io</a>',
+        registerStep1Detail: 'If you\'re new, you\'ll need to sign up first',
+        registerStep2: 'After login, click the <strong>+ button</strong> at the top left',
+        registerStep2Detail: 'It\'s in the dropdown menu where the app list is shown',
+        registerStep3: 'Enter your app information',
+        registerStep3Detail: 'App Name can only contain lowercase letters and numbers (e.g., myshop, app2024)',
         unchangeableWarning: '⚠️ <strong>Cannot change after registration:</strong>',
-        unchangeableItems: '• App Name (lowercase + numbers only)<br>• App Mode (Production/Development)<br>• Time Zone, Currency',
-        testAppTip: '💡 For test apps, include "dev" or "test" in the name',
+        unchangeableItems: 'App Name, App Mode, Time Zone, and Currency cannot be changed once set. Please enter carefully!',
+        testAppTip: '💡 <strong>Tip:</strong> For test apps, we recommend including "dev" or "test" in the name. It\'s easier to distinguish from production apps later!',
         registrationDone: "Done registering!",
         askAppMode: 'Which <strong>mode</strong> did you register the app in?',
+        appModeExplain: 'App mode is a setting to separate data.',
         appModeWarning: '⚠️ App mode cannot be changed after registration',
-        productionMode: 'Production',
-        productionModeDesc: 'For app store release (real campaigns)',
-        developmentMode: 'Development',
-        developmentModeDesc: 'For testing/staging (internal use)',
+        productionMode: 'Production Mode',
+        productionModeDesc: 'App that will be released on app stores',
+        developmentMode: 'Development Mode',
+        developmentModeDesc: 'App for testing/staging',
+        modeHelpTitle: "I don't know which one to choose",
+        modeHelpContent: '<strong>Production Mode:</strong> For apps used by real users. Choose this if your app will be released on App Store/Play Store.<br><br><strong>Development Mode:</strong> For test apps. Use this while developing and testing. Test data won\'t mix with real data.',
         selectedProduction: 'Registered in Production mode',
         selectedDevelopment: 'Registered in Development mode',
-        productionTip: '✅ You can measure real campaign performance.',
-        developmentTip: '✅ Test data stays separate from production data.',
+        productionTip: '✅ Great! You can measure real campaign performance.',
+        developmentTip: '✅ Great! Test data stays separate from production data.',
         askImplementation: '<strong>How will you implement the SDK?</strong>',
+        implExplain: 'Using AI can make integration faster!',
         implAI: 'Implement with AI',
-        implAIDesc: 'Develop directly with Claude Code, etc.',
+        implAIDesc: "I'll develop directly with Claude, ChatGPT, etc.",
         implDevTeam: 'Request to Dev Team',
-        implDevTeamDesc: 'Organize requirements to hand off',
+        implDevTeamDesc: "I'll organize requirements and send to dev team",
         implAISelected: "I'll implement with AI",
         implDevTeamSelected: "I'll request to dev team",
-        implAIResponse: "Great! 💪 I'll create a <strong>prompt template</strong> you can use directly in Claude Code.",
+        implAIResponse: "Great! 💪 I'll create a <strong>detailed prompt</strong> you can use directly with AI.",
         implDevTeamResponse: "Got it! I'll create a <strong>requirements spec</strong> and <strong>verification checklist</strong> you can share with your dev team.",
         askPlatform: 'What platform are you developing on?',
+        platformExplain: "I'll guide you on SDK installation for your platform.",
         askiOSSupport: 'Does this app <strong>support iOS</strong>?',
-        iOSTip: '💡 iOS apps require additional settings (ATT, SKAN)',
+        iOSExplain: "iOS apps require additional settings due to Apple's privacy policies.",
+        iOSTip: '💡 iOS apps need ATT (App Tracking Transparency) and SKAN setup',
         yesiOS: 'Yes, supports iOS',
         androidOnly: 'Android only',
         askSDKToken: 'Now, please enter your <strong>SDK token</strong>.',
-        tokenLocationTitle: '📍 Where to find token',
-        tokenStep1: '→ Select app',
-        tokenStep2: 'Click <strong>Settings</strong> (⚙️)',
-        tokenStep3: 'Copy from <strong>Tokens</strong> tab',
+        tokenExplain: 'SDK token is a unique key that identifies your app. You can copy it from the dashboard.',
+        tokenLocationTitle: '📍 How to find your token',
+        tokenStep1: 'Go to <a href="https://app.airbridge.io" target="_blank">app.airbridge.io</a>',
+        tokenStep2: 'Select your app from the top left',
+        tokenStep3: 'Click <strong>Settings (⚙️)</strong> in the left menu',
+        tokenStep4: 'Copy SDK Token from the <strong>Tokens</strong> tab',
         appNamePlaceholder: 'App Name (e.g., myshop)',
         sdkTokenPlaceholder: 'SDK Token (32 characters)',
+        appNameHelp: 'Must match the app name in dashboard',
         next: 'Next',
         basicInfoDone: 'Basic info complete! ✅',
         askEvents: "Now let's define the <strong>events to track</strong>.",
+        eventsExplain: 'Events are user actions in your app. Examples: login, purchase, add to cart, etc.',
         basicEventsIncluded: 'Basic events (sign up, sign in) are automatically included.',
         signUp: 'Sign Up',
         signIn: 'Sign In',
         askRevenue: 'Do you want to track <strong>purchase/payment revenue events</strong>?',
-        revenueTip: '💡 Adding revenue events enables ROAS (Return on Ad Spend) analysis',
+        revenueExplain: 'Tracking revenue events lets you analyze ROAS (Return on Ad Spend).',
+        revenueTip: '💡 Essential for e-commerce/shopping apps!',
         yesNeed: 'Yes, I need it',
-        skip: 'No, skip',
+        skip: 'Skip',
         revenueNeeded: 'I need revenue events',
         skipped: "I'll skip",
         revenueAdded: 'Added revenue-related events:',
@@ -849,35 +1121,65 @@
         addToCart: 'Add to Cart',
         orderCompleted: 'Order Completed',
         askAdditionalEvents: 'Do you have <strong>additional events to track</strong>?',
+        additionalEventsExplain: 'Add any important user actions in your app.',
         addCustom: "I'll add custom events",
         enough: "This is enough",
         customEventTitle: '📝 Add Custom Events',
-        customEventDesc: 'Enter one event per line',
+        customEventDesc: 'Enter one event per line. e.g., Search, Share, Like',
         customEventPlaceholder: 'e.g.:\nSearch\nShare\nLike',
         addEvents: 'Add Events',
         eventsAdded: 'Events added:',
-        askAds: 'Are you <strong>running ads</strong>?',
-        adsTip: '💡 Attribution setup is needed for ad performance measurement',
+        askAds: 'Are you running <strong>ad campaigns</strong>?',
+        adsExplain: 'If you acquire users through ads, you need attribution setup.',
+        adsTip: "💡 What's attribution? It tracks which ads led to app installs.",
         yesAds: 'Yes, running ads',
         noAds: 'No',
         adsYes: 'Running ads',
         adsNo: 'Not running ads',
         adsAddedInfo: '✅ Channel integration is needed for ad performance measurement.',
-        adsNextStep: 'Connect your ad channels in dashboard [Channel Integration].',
+        attributionTitle: '📊 Attribution Setup',
+        attributionDesc: 'You need to connect your ad channels (Facebook, Google, etc.) with Airbridge to measure ad performance.',
+        attributionSteps: 'Set up in dashboard',
+        attributionStep1: 'Go to app.airbridge.io',
+        attributionStep2: 'Click [Integrations] in the left menu',
+        attributionStep3: 'Select ad channel to connect in [Ad Channel] tab',
+        attributionStep4: 'Enter API key from ad channel',
+        attributionHelpLink: '📚 Attribution detailed guide',
         askDeeplink: 'Do you need <strong>deep linking</strong>?',
-        deeplinkTip: '💡 Used for: Ad click → App install → Navigate to specific screen',
+        deeplinkExplain: 'Deep links are URLs that navigate to specific screens in your app.',
+        deeplinkExample: 'Example: Ad click → App install → Navigate directly to product page',
+        deeplinkTip: "💡 If you're doing ads or marketing, you'll likely need deep links!",
         yesDeeplink: 'Yes, I need it',
-        noDeeplink: "Don't need it",
+        noDeeplink: "I'll do it later",
         deeplinkNeeded: 'I need deep linking',
-        deeplinkNotNeeded: "Don't need deep linking",
+        deeplinkNotNeeded: "I'll do it later",
         deeplinkAdded: "✅ I'll include deep link setup in the template.",
+        deeplinkTitle: '🔗 Deep Link Setup',
+        deeplinkDesc: 'Deep links require setup in both your app and the dashboard.',
+        deeplinkAppSetup: 'App-side setup (requires development):',
+        deeplinkAppStep1: 'Register URI Scheme (e.g., myapp://)',
+        deeplinkAppStep2: 'Configure Universal Link / App Link',
+        deeplinkAppStep3: 'Implement deep link handler code',
+        deeplinkDashboardSetup: 'Dashboard setup:',
+        deeplinkDashboardStep1: 'Go to [Settings] → [Deep Link]',
+        deeplinkDashboardStep2: 'Enter URI Scheme (same as app)',
+        deeplinkDashboardStep3: 'Configure Universal Link domain',
+        deeplinkHelpLink: '📚 Deep link detailed guide',
         askUserIdentity: 'Do you need to <strong>identify logged-in users</strong>?',
-        userIdentityTip: '💡 Required for cross-device tracking, per-user analysis',
+        userIdentityExplain: 'With user identity, you can recognize the same user across multiple devices.',
+        userIdentityTip: '💡 Recommended if your app has login functionality!',
         yesUserIdentity: 'Yes, I need it',
-        noUserIdentity: "Don't need it",
+        noUserIdentity: "I'll do it later",
         userIdentityNeeded: 'I need user identification',
-        userIdentityNotNeeded: "Don't need user identification",
+        userIdentityNotNeeded: "I'll do it later",
         userIdentityAdded: "✅ I'll include user identity setup in the template.",
+        userIdentityTitle: '👤 User Identity Setup',
+        userIdentityDesc: "Just send the user's unique ID to Airbridge on login.",
+        userIdentityCode: 'Call on login success:',
+        userIdentityDashboard: 'Verify in dashboard:',
+        userIdentityDashboardStep1: 'Go to [Raw Data] → [App Real-time Log]',
+        userIdentityDashboardStep2: 'Click event → Check ID in User info',
+        userIdentityHelpLink: '📚 User identity detailed guide',
         summaryItem: 'Item',
         summarySetting: 'Setting',
         summaryPlatform: 'Platform',
@@ -889,35 +1191,41 @@
         summaryATT: 'ATT Setup',
         yes: 'Yes',
         no: 'No',
-        pasteToClaudeCode: 'Paste the template below into <strong>Claude Code</strong>:',
+        pasteToClaudeCode: 'Paste the template below into <strong>AI (Claude, ChatGPT, etc.)</strong>:',
         sendToDevTeam: 'Send the <strong>requirements spec</strong> below to your dev team:',
         copy: 'Copy',
         copied: 'Copied!',
-        verificationTitle: '<strong>How to verify after integration:</strong>',
-        realtimeLogTitle: '🔍 Check Real-time Log',
-        verifyStep1: 'Run app (simulator/real device)',
-        verifyStep2: 'Go to',
-        verifyStep3: '[Raw Data] → [App Real-time Log]',
-        verifyStep4: 'Trigger events and check logs',
+        verificationTitle: '<strong>🔍 Please verify after integration!</strong>',
+        verificationExplain: 'You can verify SDK integration directly in the dashboard.',
+        realtimeLogTitle: 'Verify with Real-time Log',
+        verifyStep1: 'Run your app (simulator or real device)',
+        verifyStep2: 'Go to <a href="https://app.airbridge.io" target="_blank">app.airbridge.io</a>',
+        verifyStep3: 'Click <strong>[Raw Data]</strong> in the left menu',
+        verifyStep4: 'Select <strong>[App Real-time Log]</strong>',
+        verifyStep5: 'Trigger events in app and check logs',
         verifySuccess: '✅ Success if events appear within 1-2 seconds!',
-        verifyDelay: '⚠️ Events from the last 10 minutes may have query delays',
+        verifyDelay: '⚠️ May take up to 10 minutes. Please wait a moment.',
+        dashboardVerifyTitle: '📊 Verify in Dashboard',
+        dashboardVerifyPath: '[Raw Data] → [App Real-time Log]',
+        dashboardVerifyDesc: 'You can check event names, user info, timestamps, etc.',
         eventNotShowing: "Events aren't showing",
         troubleshootTitle: '<strong>Troubleshooting checklist:</strong>',
-        troubleshoot1: 'Is the SDK token correct?',
-        troubleshoot2: 'Does the app name match the dashboard?',
-        troubleshoot3: 'Is the event call code being executed?',
-        troubleshoot4: 'Check network connection',
-        askClaudeCode: 'Ask Claude Code like this:',
+        troubleshoot1: 'Is the SDK token correct? (Try copying from dashboard again)',
+        troubleshoot2: 'Does App Name exactly match the dashboard?',
+        troubleshoot3: 'Is the event call code being executed? (Check logs)',
+        troubleshoot4: 'Is the device connected to the internet?',
+        troubleshoot5: 'Is the app running in foreground, not background?',
+        askClaudeCode: 'Ask AI like this:',
         askDevTeam: '<strong>Request to dev team:</strong>',
         nextStepsBtn: 'Next Steps',
         restartBtn: 'Start Over',
         nextStepsTitle: '<strong>Things to do after integration:</strong>',
-        channelIntegration: '<strong>Connect Ad Channels</strong><br>Dashboard [Channel Integration]',
+        channelIntegration: '<strong>Connect Ad Channels</strong><br>Dashboard [Integrations] → [Ad Channel]',
         trackingLink: '<strong>Create Tracking Links</strong><br>Dashboard [Tracking Link]',
-        skanSetup: '<strong>SKAN Setup</strong><br>[Management] > [SKAN Conversion Value]',
-        deeplinkDomain: '<strong>Deep Link Domain Setup</strong><br>Dashboard [Deep Links]',
+        skanSetup: '<strong>SKAN Setup (iOS)</strong><br>[Settings] → [SKAN]',
+        deeplinkDomain: '<strong>Deep Link Domain Setup</strong><br>[Settings] → [Deep Link]',
         waitData: '<strong>Wait 1-2 days</strong><br>Check reports after collecting enough data',
-        congrats: 'Great job!',
+        congrats: 'Great job! 🎉',
         congratsSubtitle: 'Airbridge integration is complete.',
         helpCenter: '📚 Airbridge Help Center',
         onPayment: 'On payment completion',
@@ -926,11 +1234,11 @@
         onAction: 'On action',
         verifyBeforeProceed: 'Please verify before proceeding:',
         verifyAppRegistration: 'Verify App Registration',
-        verifyAppCheck1: 'Can you see the app in dashboard?',
-        verifyAppCheck2: 'Is the app name correct?',
+        verifyAppCheck1: 'Can you see your app in dashboard?',
+        verifyAppCheck2: 'Is App Name correct?',
         verifyAppCheck3: 'Can you access the Settings menu?',
-        verifyConfirmBtn: '✅ Verified',
-        verifyHelpBtn: '❓ Need help',
+        verifyConfirmBtn: 'All verified ✅',
+        verifyHelpBtn: 'Need help',
         tokenValid: '✅ Token format is valid',
         tokenInvalid: '⚠️ Please check token format (32 alphanumeric characters)',
         tokenVerifyTitle: 'SDK Token Verification',
@@ -938,7 +1246,23 @@
         tokenVerifyStep1: 'app.airbridge.io → Select app',
         tokenVerifyStep2: 'Settings (⚙️) → Tokens tab',
         tokenVerifyStep3: 'Verify SDK Token matches',
-        tokenMismatchWarning: 'Events will not be sent if token is incorrect'
+        tokenMismatchWarning: 'Events will not be sent if token is incorrect',
+        iOSSettingsTitle: '🍎 iOS Additional Settings',
+        iOSSettingsDesc: "Since iOS 14, Apple's privacy policies require additional settings.",
+        attTitle: 'ATT (App Tracking Transparency)',
+        attDesc: 'A popup asking users to allow tracking. Essential for ad measurement!',
+        attStep1: 'Add NSUserTrackingUsageDescription to Info.plist',
+        attStep2: 'Implement ATT permission request code',
+        attStep3: 'Pass ATT response to Airbridge SDK',
+        skanTitle: 'SKAN (SKAdNetwork)',
+        skanDesc: "Apple's alternative for measuring ad performance even when ATT is denied.",
+        skanStep1: 'Add SKAdNetworkItems to Info.plist',
+        skanStep2: 'Configure in dashboard [Settings] → [SKAN]',
+        iOSHelpLink: '📚 iOS settings detailed guide',
+        gotItInclude: 'Got it, include these',
+        checkingDashboard: 'Check Dashboard Settings',
+        dashboardCheckTitle: '📋 Dashboard Settings Checklist',
+        dashboardCheckDesc: 'Please verify the following items are properly configured in the dashboard.'
       }
     };
 
@@ -1030,6 +1354,13 @@
       });
     }
 
+    function toggleExpandable(el) {
+      const header = el;
+      const content = header.nextElementSibling;
+      header.classList.toggle('open');
+      content.classList.toggle('open');
+    }
+
     // ========== FLOW: LANGUAGE SELECTION ==========
     async function startChat() {
       await delay(500);
@@ -1067,16 +1398,19 @@
         <p>${getText('welcome1')}</p>
         <p>${getText('welcome2')}</p>
         <p>${getText('welcome3')}</p>
+        <div class="info-box">${getText('welcomeTip')}</div>
       `);
 
       await addBot(`
         <p>${getText('askAppRegistered')}</p>
         <div class="options-container">
           <button class="option-btn" onclick="checkAppRegistered(true)">
-            <span class="option-icon">✅</span>${getText('yesRegistered')}
+            <span class="option-icon">✅</span>
+            <span>${getText('yesRegistered')}</span>
           </button>
           <button class="option-btn" onclick="checkAppRegistered(false)">
-            <span class="option-icon">❌</span>${getText('notYet')}
+            <span class="option-icon">📝</span>
+            <span>${getText('notYet')}</span>
           </button>
         </div>
       `, { delay: 800 });
@@ -1096,9 +1430,18 @@
           <div class="step-box">
             <h4>${getText('registerStepTitle')}</h4>
             <ol>
-              <li><a href="https://app.airbridge.io" target="_blank">app.airbridge.io</a> ${getText('registerStep1')}</li>
-              <li>${getText('registerStep2')}</li>
-              <li>${getText('registerStep3')}</li>
+              <li>
+                ${getText('registerStep1')}
+                <div class="step-detail">${getText('registerStep1Detail')}</div>
+              </li>
+              <li>
+                ${getText('registerStep2')}
+                <div class="step-detail">${getText('registerStep2Detail')}</div>
+              </li>
+              <li>
+                ${getText('registerStep3')}
+                <div class="step-detail">${getText('registerStep3Detail')}</div>
+              </li>
             </ol>
           </div>
           <div class="error-box">
@@ -1108,7 +1451,8 @@
           <div class="info-box">
             ${getText('testAppTip')}
           </div>
-          <div style="margin-top: 16px;">
+          <div class="btn-row" style="margin-top: 16px;">
+            <a href="https://app.airbridge.io" target="_blank" class="submit-btn secondary" style="text-decoration: none; text-align: center;">${getText('verifyHelpBtn')}</a>
             <button class="submit-btn" onclick="checkAppRegistered(true)">${getText('registrationDone')}</button>
           </div>
         `);
@@ -1120,24 +1464,24 @@
         <p><strong>${getText('verifyAppRegistration')}</strong></p>
         <p>${getText('verifyBeforeProceed')}</p>
         <div class="checklist" id="appVerifyChecklist">
-          <label class="checklist-item" style="cursor: pointer;">
+          <label class="checklist-item">
             <input type="checkbox" class="verify-check" onchange="updateVerifyButton('appVerify')">
             <span class="icon">☐</span>
-            <span>${getText('verifyAppCheck1')}</span>
+            <span class="content">${getText('verifyAppCheck1')}</span>
           </label>
-          <label class="checklist-item" style="cursor: pointer;">
+          <label class="checklist-item">
             <input type="checkbox" class="verify-check" onchange="updateVerifyButton('appVerify')">
             <span class="icon">☐</span>
-            <span>${getText('verifyAppCheck2')}</span>
+            <span class="content">${getText('verifyAppCheck2')}</span>
           </label>
-          <label class="checklist-item" style="cursor: pointer;">
+          <label class="checklist-item">
             <input type="checkbox" class="verify-check" onchange="updateVerifyButton('appVerify')">
             <span class="icon">☐</span>
-            <span>${getText('verifyAppCheck3')}</span>
+            <span class="content">${getText('verifyAppCheck3')}</span>
           </label>
         </div>
         <div class="btn-row" style="margin-top: 12px;">
-          <a href="https://app.airbridge.io" target="_blank" class="submit-btn secondary" style="text-decoration: none; text-align: center;">${getText('verifyHelpBtn')}</a>
+          <a href="https://app.airbridge.io" target="_blank" class="submit-btn help-btn" style="text-decoration: none; text-align: center;">🔍 ${getText('verifyHelpBtn')}</a>
           <button class="submit-btn" id="appVerifyBtn" onclick="confirmAppRegistration()" disabled>${getText('verifyConfirmBtn')}</button>
         </div>
       `);
@@ -1165,22 +1509,32 @@
     async function askAppMode() {
       await addBot(`
         <p>${getText('askAppMode')}</p>
+        <p style="font-size: 13px; color: #64748b;">${getText('appModeExplain')}</p>
         <div class="warning-box">${getText('appModeWarning')}</div>
         <div class="options-container" style="margin-top: 12px;">
           <button class="option-btn" onclick="selectAppMode('production')">
             <span class="option-icon">🚀</span>
-            <div>
+            <div class="option-btn-content">
               <strong>${getText('productionMode')}</strong>
-              <p style="font-size: 12px; color: #64748b; margin-top: 4px;">${getText('productionModeDesc')}</p>
+              <p>${getText('productionModeDesc')}</p>
             </div>
           </button>
           <button class="option-btn" onclick="selectAppMode('development')">
             <span class="option-icon">🔧</span>
-            <div>
+            <div class="option-btn-content">
               <strong>${getText('developmentMode')}</strong>
-              <p style="font-size: 12px; color: #64748b; margin-top: 4px;">${getText('developmentModeDesc')}</p>
+              <p>${getText('developmentModeDesc')}</p>
             </div>
           </button>
+        </div>
+        <div class="expandable" style="margin-top: 12px;">
+          <div class="expandable-header" onclick="toggleExpandable(this)">
+            <h5>❓ ${getText('modeHelpTitle')}</h5>
+            <span class="arrow">▼</span>
+          </div>
+          <div class="expandable-content">
+            <p style="font-size: 13px; color: #475569; line-height: 1.6;">${getText('modeHelpContent')}</p>
+          </div>
         </div>
       `);
     }
@@ -1188,26 +1542,27 @@
     async function selectAppMode(mode) {
       state.appMode = mode;
       addUser(mode === 'production' ? getText('selectedProduction') : getText('selectedDevelopment'));
-      await addBot(`<p>${mode === 'production' ? getText('productionTip') : getText('developmentTip')}</p>`);
+      await addBot(`<div class="success-box">${mode === 'production' ? getText('productionTip') : getText('developmentTip')}</div>`);
       await askImplementationMethod();
     }
 
     async function askImplementationMethod() {
       await addBot(`
         <p>${getText('askImplementation')}</p>
+        <p style="font-size: 13px; color: #64748b;">${getText('implExplain')}</p>
         <div class="options-container">
           <button class="option-btn" onclick="selectImplementationMethod('ai')">
             <span class="option-icon">🤖</span>
-            <div>
+            <div class="option-btn-content">
               <strong>${getText('implAI')}</strong>
-              <p style="font-size: 12px; color: #64748b; margin-top: 4px;">${getText('implAIDesc')}</p>
+              <p>${getText('implAIDesc')}</p>
             </div>
           </button>
           <button class="option-btn" onclick="selectImplementationMethod('devteam')">
             <span class="option-icon">👥</span>
-            <div>
+            <div class="option-btn-content">
               <strong>${getText('implDevTeam')}</strong>
-              <p style="font-size: 12px; color: #64748b; margin-top: 4px;">${getText('implDevTeamDesc')}</p>
+              <p>${getText('implDevTeamDesc')}</p>
             </div>
           </button>
         </div>
@@ -1217,13 +1572,14 @@
     async function selectImplementationMethod(method) {
       state.implementationMethod = method;
       addUser(method === 'ai' ? getText('implAISelected') : getText('implDevTeamSelected'));
-      await addBot(`<p>${method === 'ai' ? getText('implAIResponse') : getText('implDevTeamResponse')}</p>`);
+      await addBot(`<div class="success-box">${method === 'ai' ? getText('implAIResponse') : getText('implDevTeamResponse')}</div>`);
       await askPlatform();
     }
 
     async function askPlatform() {
       await addBot(`
         <p>${getText('askPlatform')}</p>
+        <p style="font-size: 13px; color: #64748b;">${getText('platformExplain')}</p>
         <div class="options-container">
           <button class="option-btn" onclick="selectPlatform('Flutter')">
             <span class="option-icon">💙</span>Flutter
@@ -1258,6 +1614,7 @@
     async function askIOSSupport() {
       await addBot(`
         <p>${getText('askiOSSupport')}</p>
+        <p style="font-size: 13px; color: #64748b;">${getText('iOSExplain')}</p>
         <div class="info-box">${getText('iOSTip')}</div>
         <div class="options-row" style="margin-top: 12px;">
           <button class="option-btn" onclick="setIOSSupport(true)">
@@ -1279,18 +1636,24 @@
     async function askSDKToken() {
       await addBot(`
         <p>${getText('askSDKToken')}</p>
+        <p style="font-size: 13px; color: #64748b;">${getText('tokenExplain')}</p>
         <div class="step-box">
           <h4>${getText('tokenLocationTitle')}</h4>
           <ol>
-            <li><a href="https://app.airbridge.io" target="_blank">app.airbridge.io</a> ${getText('tokenStep1')}</li>
+            <li>${getText('tokenStep1')}</li>
             <li>${getText('tokenStep2')}</li>
             <li>${getText('tokenStep3')}</li>
+            <li>${getText('tokenStep4')}</li>
           </ol>
         </div>
         <div class="input-container">
           <input type="text" class="input-field" id="appNameInput" placeholder="${getText('appNamePlaceholder')}">
+          <p style="font-size: 11px; color: #64748b; margin: -4px 0 8px 4px;">${getText('appNameHelp')}</p>
           <input type="text" class="input-field" id="sdkTokenInput" placeholder="${getText('sdkTokenPlaceholder')}">
-          <button class="submit-btn" onclick="submitSDKToken()">${getText('next')}</button>
+          <div class="btn-row">
+            <a href="https://app.airbridge.io" target="_blank" class="submit-btn help-btn" style="text-decoration: none; text-align: center; flex: 0 0 auto; padding: 12px;">🔍 ${getText('verifyHelpBtn')}</a>
+            <button class="submit-btn" onclick="submitSDKToken()">${getText('next')}</button>
+          </div>
         </div>
       `);
     }
@@ -1315,24 +1678,15 @@
       const validClass = isValidFormat ? 'success-box' : 'warning-box';
       await addBot(`
         <div class="${validClass}">${validMsg}</div>
-        <div class="step-box" style="margin-top: 12px;">
+        <div class="dashboard-guide" style="margin-top: 12px;">
           <h4>🔍 ${getText('tokenVerifyTitle')}</h4>
-          <p style="font-size: 13px; color: #64748b; margin-bottom: 8px;">${getText('tokenVerifyDesc')}</p>
+          <p style="margin-bottom: 8px;">${getText('tokenVerifyDesc')}</p>
+          <div class="path">${getText('tokenVerifyStep1')} → ${getText('tokenVerifyStep2')}</div>
           <div class="checklist" id="tokenVerifyChecklist">
-            <label class="checklist-item" style="cursor: pointer;">
+            <label class="checklist-item">
               <input type="checkbox" class="verify-check" onchange="updateVerifyButton('tokenVerify')">
               <span class="icon">☐</span>
-              <span>${getText('tokenVerifyStep1')}</span>
-            </label>
-            <label class="checklist-item" style="cursor: pointer;">
-              <input type="checkbox" class="verify-check" onchange="updateVerifyButton('tokenVerify')">
-              <span class="icon">☐</span>
-              <span>${getText('tokenVerifyStep2')}</span>
-            </label>
-            <label class="checklist-item" style="cursor: pointer;">
-              <input type="checkbox" class="verify-check" onchange="updateVerifyButton('tokenVerify')">
-              <span class="icon">☐</span>
-              <span>${getText('tokenVerifyStep3')}</span>
+              <span class="content">${getText('tokenVerifyStep3')}</span>
             </label>
           </div>
           <div class="warning-box" style="margin-top: 8px; font-size: 12px;">
@@ -1340,7 +1694,7 @@
           </div>
         </div>
         <div class="btn-row" style="margin-top: 12px;">
-          <a href="https://app.airbridge.io" target="_blank" class="submit-btn secondary" style="text-decoration: none; text-align: center;">${getText('verifyHelpBtn')}</a>
+          <a href="https://app.airbridge.io" target="_blank" class="submit-btn help-btn" style="text-decoration: none; text-align: center;">🔍 ${getText('verifyHelpBtn')}</a>
           <button class="submit-btn" id="tokenVerifyBtn" onclick="confirmTokenVerification()" disabled>${getText('verifyConfirmBtn')}</button>
         </div>
       `);
@@ -1357,15 +1711,16 @@
     async function askBasicEvents() {
       await addBot(`
         <p>${getText('askEvents')}</p>
-        <p>${getText('basicEventsIncluded')}</p>
+        <p style="font-size: 13px; color: #64748b;">${getText('eventsExplain')}</p>
+        <div class="info-box">${getText('basicEventsIncluded')}</div>
         <div class="checklist">
           <div class="checklist-item done">
             <span class="icon">✅</span>
-            <span>${getText('signUp')} (sign_up)</span>
+            <span class="content">${getText('signUp')} (sign_up)</span>
           </div>
           <div class="checklist-item done">
             <span class="icon">✅</span>
-            <span>${getText('signIn')} (sign_in)</span>
+            <span class="content">${getText('signIn')} (sign_in)</span>
           </div>
         </div>
       `);
@@ -1379,6 +1734,7 @@
     async function askRevenueEvents() {
       await addBot(`
         <p>${getText('askRevenue')}</p>
+        <p style="font-size: 13px; color: #64748b;">${getText('revenueExplain')}</p>
         <div class="info-box">${getText('revenueTip')}</div>
         <div class="options-row" style="margin-top: 12px;">
           <button class="option-btn" onclick="setRevenueEvents(true)">
@@ -1403,9 +1759,9 @@
         await addBot(`
           <p>${getText('revenueAdded')}</p>
           <div class="checklist">
-            <div class="checklist-item done"><span class="icon">✅</span><span>${getText('productViewed')} (product_viewed)</span></div>
-            <div class="checklist-item done"><span class="icon">✅</span><span>${getText('addToCart')} (add_to_cart)</span></div>
-            <div class="checklist-item done"><span class="icon">✅</span><span>${getText('orderCompleted')} (order_completed)</span></div>
+            <div class="checklist-item done"><span class="icon">✅</span><span class="content">${getText('productViewed')} (product_viewed)</span></div>
+            <div class="checklist-item done"><span class="icon">✅</span><span class="content">${getText('addToCart')} (add_to_cart)</span></div>
+            <div class="checklist-item done"><span class="icon">✅</span><span class="content">${getText('orderCompleted')} (order_completed)</span></div>
           </div>
         `);
       }
@@ -1415,6 +1771,7 @@
     async function askAdditionalEvents() {
       await addBot(`
         <p>${getText('askAdditionalEvents')}</p>
+        <p style="font-size: 13px; color: #64748b;">${getText('additionalEventsExplain')}</p>
         <div class="options-row" style="margin-top: 12px;">
           <button class="option-btn" onclick="addCustomEvents()">
             <span class="option-icon">➕</span>${getText('addCustom')}
@@ -1466,16 +1823,15 @@
       const msg = state.language === 'en'
         ? "Events configured! 🎉 Now let's check if you need <strong>additional features</strong>."
         : "이벤트 설정 완료! 🎉 이제 <strong>추가 기능이 필요한지</strong> 확인할게요.";
-      await addBot(`<p>${msg}</p>`);
+      await addBot(`<div class="success-box">${msg}</div>`);
       await askAdsQuestion();
     }
 
     async function askAdsQuestion() {
-      const askAds = state.language === 'en'
-        ? 'Are you acquiring users through <strong>ad campaigns</strong>?'
-        : '<strong>광고 캠페인</strong>으로 유저를 유입시키고 있나요?';
       await addBot(`
-        <p>${askAds}</p>
+        <p>${getText('askAds')}</p>
+        <p style="font-size: 13px; color: #64748b;">${getText('adsExplain')}</p>
+        <div class="info-box">${getText('adsTip')}</div>
         <div class="options-row" style="margin-top: 12px;">
           <button class="option-btn" onclick="setAdsUsage(true)">
             <span class="option-icon">📢</span>${getText('yesAds')}
@@ -1491,17 +1847,23 @@
       state.hasAds = hasAds;
       addUser(hasAds ? getText('adsYes') : getText('adsNo'));
       if (hasAds) {
-        const cardTitle = state.language === 'en' ? 'Attribution Setup Required' : '어트리뷰션 설정 필요';
-        const cardDesc = state.language === 'en'
-          ? 'Dashboard configuration is required to measure ad performance.'
-          : '광고 성과를 측정하려면 대시보드에서 설정이 필요해요.';
         await addBot(`
           <div class="feature-card">
             <div class="feature-card-header">
               <span class="icon">📊</span>
-              <h5>${cardTitle}</h5>
+              <h5>${getText('attributionTitle')}</h5>
             </div>
-            <p>${cardDesc}</p>
+            <p>${getText('attributionDesc')}</p>
+            <div class="detail-steps">
+              <p style="font-weight: 600; margin-bottom: 8px; font-size: 12px;">${getText('attributionSteps')}:</p>
+              <ol>
+                <li>${getText('attributionStep1')}</li>
+                <li>${getText('attributionStep2')}</li>
+                <li>${getText('attributionStep3')}</li>
+                <li>${getText('attributionStep4')}</li>
+              </ol>
+            </div>
+            <a href="${getHelpLink('/guides/ad-channel-integration')}" target="_blank" class="help-link">${getText('attributionHelpLink')} →</a>
           </div>
         `);
       }
@@ -1509,18 +1871,19 @@
     }
 
     async function askDeeplinkQuestion() {
-      const askDeeplink = state.language === 'en'
-        ? 'Do you need <strong>deep linking</strong>?'
-        : '<strong>딥링크</strong>가 필요하세요?';
-      const later = state.language === 'en' ? "I'll do it later" : '나중에 할게요';
       await addBot(`
-        <p>${askDeeplink}</p>
+        <p>${getText('askDeeplink')}</p>
+        <p style="font-size: 13px; color: #64748b;">${getText('deeplinkExplain')}</p>
+        <div class="info-box">
+          <strong>${state.language === 'en' ? 'Example:' : '예시:'}</strong> ${getText('deeplinkExample')}
+        </div>
+        <div class="info-box" style="background: #f0fdf4; border-color: #22c55e; color: #166534;">${getText('deeplinkTip')}</div>
         <div class="options-row" style="margin-top: 12px;">
           <button class="option-btn" onclick="setDeeplinkUsage(true)">
             <span class="option-icon">🔗</span>${getText('yesDeeplink')}
           </button>
           <button class="option-btn" onclick="setDeeplinkUsage(false)">
-            <span class="option-icon">⏭️</span>${later}
+            <span class="option-icon">⏭️</span>${getText('noDeeplink')}
           </button>
         </div>
       `);
@@ -1528,16 +1891,32 @@
 
     async function setDeeplinkUsage(needed) {
       state.needsDeeplink = needed;
-      addUser(needed ? getText('deeplinkNeeded') : (state.language === 'en' ? "I'll do it later" : '나중에 할게요'));
+      addUser(needed ? getText('deeplinkNeeded') : getText('noDeeplink'));
       if (needed) {
-        const cardTitle = state.language === 'en' ? 'Deep Link Setup Included' : '딥링크 설정 포함';
         await addBot(`
           <div class="feature-card">
             <div class="feature-card-header">
               <span class="icon">🔗</span>
-              <h5>${cardTitle}</h5>
+              <h5>${getText('deeplinkTitle')}</h5>
             </div>
-            <p>${getText('deeplinkAdded')}</p>
+            <p>${getText('deeplinkDesc')}</p>
+            <div class="detail-steps">
+              <p style="font-weight: 600; margin-bottom: 8px; font-size: 12px;">${getText('deeplinkAppSetup')}</p>
+              <ol>
+                <li>${getText('deeplinkAppStep1')}</li>
+                <li>${getText('deeplinkAppStep2')}</li>
+                <li>${getText('deeplinkAppStep3')}</li>
+              </ol>
+            </div>
+            <div class="detail-steps" style="margin-top: 8px;">
+              <p style="font-weight: 600; margin-bottom: 8px; font-size: 12px;">${getText('deeplinkDashboardSetup')}</p>
+              <ol>
+                <li>${getText('deeplinkDashboardStep1')}</li>
+                <li>${getText('deeplinkDashboardStep2')}</li>
+                <li>${getText('deeplinkDashboardStep3')}</li>
+              </ol>
+            </div>
+            <a href="${getHelpLink('/guides/deep-link')}" target="_blank" class="help-link">${getText('deeplinkHelpLink')} →</a>
           </div>
         `);
       }
@@ -1545,16 +1924,16 @@
     }
 
     async function askUserIdentityQuestion() {
-      const later = state.language === 'en' ? "I'll do it later" : '나중에 할게요';
       await addBot(`
         <p>${getText('askUserIdentity')}</p>
+        <p style="font-size: 13px; color: #64748b;">${getText('userIdentityExplain')}</p>
         <div class="info-box">${getText('userIdentityTip')}</div>
         <div class="options-row" style="margin-top: 12px;">
           <button class="option-btn" onclick="setUserIdentityUsage(true)">
             <span class="option-icon">👤</span>${getText('yesUserIdentity')}
           </button>
           <button class="option-btn" onclick="setUserIdentityUsage(false)">
-            <span class="option-icon">⏭️</span>${later}
+            <span class="option-icon">⏭️</span>${getText('noUserIdentity')}
           </button>
         </div>
       `);
@@ -1562,16 +1941,23 @@
 
     async function setUserIdentityUsage(needed) {
       state.needsUserIdentity = needed;
-      addUser(needed ? getText('userIdentityNeeded') : (state.language === 'en' ? "I'll do it later" : '나중에 할게요'));
+      addUser(needed ? getText('userIdentityNeeded') : getText('noUserIdentity'));
       if (needed) {
-        const cardTitle = state.language === 'en' ? 'User Identity Setup Included' : '유저 식별자 설정 포함';
         await addBot(`
           <div class="feature-card">
             <div class="feature-card-header">
               <span class="icon">👤</span>
-              <h5>${cardTitle}</h5>
+              <h5>${getText('userIdentityTitle')}</h5>
             </div>
-            <p>${getText('userIdentityAdded')}</p>
+            <p>${getText('userIdentityDesc')}</p>
+            <div class="detail-steps">
+              <p style="font-weight: 600; margin-bottom: 8px; font-size: 12px;">${getText('userIdentityDashboard')}</p>
+              <ol>
+                <li>${getText('userIdentityDashboardStep1')}</li>
+                <li>${getText('userIdentityDashboardStep2')}</li>
+              </ol>
+            </div>
+            <a href="${getHelpLink('/guides/user-identifier')}" target="_blank" class="help-link">${getText('userIdentityHelpLink')} →</a>
           </div>
         `);
       }
@@ -1583,35 +1969,65 @@
     }
 
     async function askIOSSpecificQuestions() {
-      const intro = state.language === 'en'
-        ? 'Since this is an iOS app, <strong>additional settings</strong> are required.'
-        : 'iOS 앱이라 <strong>추가 설정</strong>이 필요해요.';
-      const confirmBtn = state.language === 'en' ? 'Got it, include these' : '이해했어요, 포함해주세요';
       await addBot(`
-        <p>${intro}</p>
-        <div class="feature-card">
+        <div class="feature-card" style="border-color: #f97316;">
           <div class="feature-card-header">
             <span class="icon">🍎</span>
-            <h5>${state.language === 'en' ? 'iOS Required Settings' : 'iOS 필수 설정'}</h5>
+            <h5>${getText('iOSSettingsTitle')}</h5>
           </div>
-          <p>${state.language === 'en' ? 'Required due to iOS 14+ privacy policies.' : 'iOS 14 이후 개인정보 보호 정책으로 인해 필수입니다.'}</p>
+          <p>${getText('iOSSettingsDesc')}</p>
+
+          <div class="expandable" style="margin-top: 12px; border-color: #fed7aa;">
+            <div class="expandable-header" onclick="toggleExpandable(this)" style="background: #fff7ed;">
+              <h5>📱 ${getText('attTitle')}</h5>
+              <span class="arrow">▼</span>
+            </div>
+            <div class="expandable-content">
+              <p style="font-size: 13px; color: #475569; margin-bottom: 8px;">${getText('attDesc')}</p>
+              <div class="detail-steps">
+                <ol>
+                  <li>${getText('attStep1')}</li>
+                  <li>${getText('attStep2')}</li>
+                  <li>${getText('attStep3')}</li>
+                </ol>
+              </div>
+            </div>
+          </div>
+
+          <div class="expandable" style="margin-top: 8px; border-color: #fed7aa;">
+            <div class="expandable-header" onclick="toggleExpandable(this)" style="background: #fff7ed;">
+              <h5>📊 ${getText('skanTitle')}</h5>
+              <span class="arrow">▼</span>
+            </div>
+            <div class="expandable-content">
+              <p style="font-size: 13px; color: #475569; margin-bottom: 8px;">${getText('skanDesc')}</p>
+              <div class="detail-steps">
+                <ol>
+                  <li>${getText('skanStep1')}</li>
+                  <li>${getText('skanStep2')}</li>
+                </ol>
+              </div>
+            </div>
+          </div>
+
+          <a href="${getHelpLink('/guides/ios-sdk-setup')}" target="_blank" class="help-link">${getText('iOSHelpLink')} →</a>
         </div>
         <div style="margin-top: 12px;">
-          <button class="submit-btn" onclick="confirmIOSSettings()">${confirmBtn}</button>
+          <button class="submit-btn" onclick="confirmIOSSettings()">✅ ${getText('gotItInclude')}</button>
         </div>
       `);
     }
 
     async function confirmIOSSettings() {
-      addUser(state.language === 'en' ? 'Include iOS settings' : 'iOS 설정 포함해주세요');
-      await addBot(`<div class="success-box">${state.language === 'en' ? '✅ ATT prompt setup will be included.' : '✅ ATT 프롬프트 설정을 포함할게요.'}</div>`);
+      addUser(getText('gotItInclude'));
+      await addBot(`<div class="success-box">${state.language === 'en' ? '✅ iOS settings will be included in the template.' : '✅ iOS 설정을 템플릿에 포함할게요.'}</div>`);
       await generateFinalTemplate();
     }
 
     // ========== FLOW: PHASE 4 - GENERATE TEMPLATE ==========
     async function generateFinalTemplate() {
       updateProgress(4);
-      await addBot(`<p>${state.language === 'en' ? 'Configuration complete! 🎉' : '설정 확인 완료! 🎉'}</p>`);
+      await addBot(`<div class="success-box">${state.language === 'en' ? 'Configuration complete! 🎉' : '설정 확인 완료! 🎉'}</div>`);
 
       const evtCount = state.language === 'en' ? `${state.events.length}` : `${state.events.length}개`;
       const yesNo = (val) => val ? `✅ ${getText('yes')}` : `❌ ${getText('no')}`;
@@ -1637,7 +2053,7 @@ ${template}
         </div>
       `, { delay: 800 });
 
-      await showVerificationGuide();
+      await showDashboardVerification();
     }
 
     function generateAITemplate() {
@@ -1689,18 +2105,73 @@ ${template}
       return spec;
     }
 
+    async function showDashboardVerification() {
+      const isEn = state.language === 'en';
+
+      // Dashboard configuration checklist
+      let dashboardChecks = '';
+      if (state.hasAds) {
+        dashboardChecks += `
+          <label class="checklist-item">
+            <input type="checkbox" class="verify-check" onchange="updateFinalVerifyButton()">
+            <span class="icon">☐</span>
+            <span class="content">${isEn ? '[Integrations] → [Ad Channel] - Connected ad channels' : '[Integrations] → [Ad Channel] - 광고 채널 연동 완료'}</span>
+          </label>`;
+      }
+      if (state.needsDeeplink) {
+        dashboardChecks += `
+          <label class="checklist-item">
+            <input type="checkbox" class="verify-check" onchange="updateFinalVerifyButton()">
+            <span class="icon">☐</span>
+            <span class="content">${isEn ? '[Settings] → [Deep Link] - URI Scheme configured' : '[Settings] → [Deep Link] - URI Scheme 설정 완료'}</span>
+          </label>`;
+      }
+      if (state.hasIOS) {
+        dashboardChecks += `
+          <label class="checklist-item">
+            <input type="checkbox" class="verify-check" onchange="updateFinalVerifyButton()">
+            <span class="icon">☐</span>
+            <span class="content">${isEn ? '[Settings] → [SKAN] - SKAN configured' : '[Settings] → [SKAN] - SKAN 설정 완료'}</span>
+          </label>`;
+      }
+
+      if (dashboardChecks) {
+        await addBot(`
+          <div class="dashboard-guide">
+            <h4>${getText('dashboardCheckTitle')}</h4>
+            <p style="margin-bottom: 12px;">${getText('dashboardCheckDesc')}</p>
+            <div class="checklist" id="dashboardChecklist">
+              ${dashboardChecks}
+            </div>
+            <div style="margin-top: 12px;">
+              <a href="https://app.airbridge.io" target="_blank" class="submit-btn help-btn" style="text-decoration: none; text-align: center; display: block;">🔍 ${getText('checkingDashboard')}</a>
+            </div>
+          </div>
+        `, { delay: 400 });
+      }
+
+      await showVerificationGuide();
+    }
+
     async function showVerificationGuide() {
       const isEn = state.language === 'en';
       await addBot(`
         <p>${getText('verificationTitle')}</p>
+        <p style="font-size: 13px; color: #64748b;">${getText('verificationExplain')}</p>
         <div class="step-box">
-          <h4>${getText('realtimeLogTitle')}</h4>
+          <h4>📱 ${getText('realtimeLogTitle')}</h4>
           <ol>
             <li>${getText('verifyStep1')}</li>
-            <li><a href="https://app.airbridge.io" target="_blank">app.airbridge.io</a> ${getText('verifyStep2')}</li>
+            <li>${getText('verifyStep2')}</li>
             <li>${getText('verifyStep3')}</li>
             <li>${getText('verifyStep4')}</li>
+            <li>${getText('verifyStep5')}</li>
           </ol>
+        </div>
+        <div class="dashboard-guide" style="margin-top: 12px;">
+          <h4>${getText('dashboardVerifyTitle')}</h4>
+          <div class="path">${getText('dashboardVerifyPath')}</div>
+          <p>${getText('dashboardVerifyDesc')}</p>
         </div>
         <div class="mock-ui">
           <div class="mock-ui-header">
@@ -1714,30 +2185,39 @@ ${template}
           </div>
         </div>
         <div class="success-box">${getText('verifySuccess')}</div>
+        <div class="warning-box">${getText('verifyDelay')}</div>
       `, { delay: 600 });
 
       let checklistItems = `
-        <label class="checklist-item" style="cursor: pointer;">
+        <label class="checklist-item">
           <input type="checkbox" class="verify-check" onchange="updateFinalVerifyButton()">
           <span class="icon">☐</span>
-          <span>${isEn ? 'Open event received on app launch' : '앱 실행 시 Open 이벤트 수신됨'}</span>
+          <span class="content">${isEn ? 'SDK installed correctly' : 'SDK 설치 완료'}</span>
         </label>
-        <label class="checklist-item" style="cursor: pointer;">
+        <label class="checklist-item">
           <input type="checkbox" class="verify-check" onchange="updateFinalVerifyButton()">
           <span class="icon">☐</span>
-          <span>${isEn ? 'sign_in event received on login' : '로그인 시 sign_in 이벤트 수신됨'}</span>
+          <span class="content">${isEn ? 'Open event received on app launch' : '앱 실행 시 Open 이벤트 수신됨'}</span>
+        </label>
+        <label class="checklist-item">
+          <input type="checkbox" class="verify-check" onchange="updateFinalVerifyButton()">
+          <span class="icon">☐</span>
+          <span class="content">${isEn ? 'sign_in event received on login' : '로그인 시 sign_in 이벤트 수신됨'}</span>
         </label>`;
       if (state.needsRevenue) {
-        checklistItems += `<label class="checklist-item" style="cursor: pointer;"><input type="checkbox" class="verify-check" onchange="updateFinalVerifyButton()"><span class="icon">☐</span><span>${isEn ? 'order_completed event received' : 'order_completed 이벤트 수신됨'}</span></label>`;
+        checklistItems += `<label class="checklist-item"><input type="checkbox" class="verify-check" onchange="updateFinalVerifyButton()"><span class="icon">☐</span><span class="content">${isEn ? 'order_completed event received on purchase' : '구매 시 order_completed 이벤트 수신됨'}</span></label>`;
+      }
+      if (state.needsUserIdentity) {
+        checklistItems += `<label class="checklist-item"><input type="checkbox" class="verify-check" onchange="updateFinalVerifyButton()"><span class="icon">☐</span><span class="content">${isEn ? 'User ID visible in event details' : '이벤트 상세에서 User ID 확인됨'}</span></label>`;
       }
 
       await addBot(`
         <div class="step-box" style="margin-top: 16px;">
-          <h4>${isEn ? '✅ Final Integration Checklist' : '✅ 최종 연동 체크리스트'}</h4>
+          <h4>✅ ${isEn ? 'Final Integration Checklist' : '최종 연동 체크리스트'}</h4>
           <div class="checklist" id="finalVerifyChecklist">${checklistItems}</div>
         </div>
         <div class="btn-row" style="margin-top: 12px;">
-          <button class="submit-btn secondary" onclick="showTroubleshooting()">🔧 ${getText('eventNotShowing')}</button>
+          <button class="submit-btn help-btn" onclick="showTroubleshooting()">🔧 ${getText('eventNotShowing')}</button>
           <button class="submit-btn" id="finalVerifyBtn" onclick="confirmFinalVerification()" disabled>${isEn ? '🎉 Integration Complete!' : '🎉 연동 완료!'}</button>
         </div>
       `, { delay: 400 });
@@ -1764,10 +2244,14 @@ ${template}
       await addBot(`
         <p>${getText('troubleshootTitle')}</p>
         <div class="checklist">
-          <div class="checklist-item"><span class="icon">1️⃣</span><span>${getText('troubleshoot1')}</span></div>
-          <div class="checklist-item"><span class="icon">2️⃣</span><span>${getText('troubleshoot2')}</span></div>
-          <div class="checklist-item"><span class="icon">3️⃣</span><span>${getText('troubleshoot3')}</span></div>
-          <div class="checklist-item"><span class="icon">4️⃣</span><span>${getText('troubleshoot4')}</span></div>
+          <div class="checklist-item"><span class="icon">1️⃣</span><span class="content">${getText('troubleshoot1')}</span></div>
+          <div class="checklist-item"><span class="icon">2️⃣</span><span class="content">${getText('troubleshoot2')}</span></div>
+          <div class="checklist-item"><span class="icon">3️⃣</span><span class="content">${getText('troubleshoot3')}</span></div>
+          <div class="checklist-item"><span class="icon">4️⃣</span><span class="content">${getText('troubleshoot4')}</span></div>
+          <div class="checklist-item"><span class="icon">5️⃣</span><span class="content">${getText('troubleshoot5')}</span></div>
+        </div>
+        <div style="margin-top: 12px;">
+          <a href="${getHelpLink('/guides/troubleshooting')}" target="_blank" class="submit-btn secondary" style="text-decoration: none; text-align: center; display: block;">📚 ${state.language === 'en' ? 'View Troubleshooting Guide' : '문제 해결 가이드 보기'}</a>
         </div>
       `);
     }
@@ -1775,12 +2259,15 @@ ${template}
     async function showNextSteps() {
       let nextStepsHTML = `<p>${getText('nextStepsTitle')}</p><div class="checklist">`;
       if (state.hasAds) {
-        nextStepsHTML += `<div class="checklist-item pending"><span class="icon">📢</span><span>${getText('channelIntegration')}</span></div>`;
+        nextStepsHTML += `<div class="checklist-item pending"><span class="icon">📢</span><span class="content">${getText('channelIntegration')}</span></div>`;
       }
       if (state.hasIOS) {
-        nextStepsHTML += `<div class="checklist-item pending"><span class="icon">📊</span><span>${getText('skanSetup')}</span></div>`;
+        nextStepsHTML += `<div class="checklist-item pending"><span class="icon">📊</span><span class="content">${getText('skanSetup')}</span></div>`;
       }
-      nextStepsHTML += `<div class="checklist-item pending"><span class="icon">⏳</span><span>${getText('waitData')}</span></div></div>`;
+      if (state.needsDeeplink) {
+        nextStepsHTML += `<div class="checklist-item pending"><span class="icon">🔗</span><span class="content">${getText('deeplinkDomain')}</span></div>`;
+      }
+      nextStepsHTML += `<div class="checklist-item pending"><span class="icon">⏳</span><span class="content">${getText('waitData')}</span></div></div>`;
       await addBot(nextStepsHTML);
 
       await addBot(`
